@@ -9,15 +9,16 @@
     <div>
         <div>
             <h1>密码管理</h1>
-            解码关键字:<input id="keyword" type="password" style="width:25em;"><button id="statebutton" onclick="changeKeywordInputState()"><***></button>
+            <button id="statebutton" onclick="changeKeywordInputState()" style="border-style: none;background: none;padding: unset;">※※※</button>:<input id="keyword" style="width:25em;">
             <br><br>
-            <div style="background-color:#00bbee ;text-align: center;">
-                <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background-color:#00bbee;"><u>建立新条目</u></button></center>
+            <div style="border-style: dotted;">
+                <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background:none;"><u>建立新条目</u></button></center>
                 <div id="newCode" style="display: none;">
                     <br>
                     ID:<input id="id_input" style="width:25em;"><br>
+                    名称:<input id="id_name" style="width:25em;"><br>
                     信息:<br><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
-                    <button id="buttonGetCode">获得编码↓</button><br>
+                    <br><button id="buttonGetCode">获得编码↓</button><br>
                     <textarea id="code_output" style="height:10em;width:25em;word-break: break-all;"></textarea>
                 </div>
             </div>
@@ -32,18 +33,20 @@
     </div>
 </body>
 <script>
+    changeKeywordInputState();
+    newCode_div.style.display="none"
     function changeKeywordInputState(){//切换解码关键字输入框的显示模式（普通模式 密码模式）
         keyword_inputbox=document.getElementById('keyword');
         keyword_statebutton=document.getElementById('statebutton');
         if(keyword_inputbox.type=="password"){
             keyword_inputbox.type="";
-            keyword_statebutton.innerHTML="<123>";
+            keyword_statebutton.innerHTML="关键字";
         }else{
             keyword_inputbox.type="password"
-            keyword_statebutton.innerHTML="<***>";
+            keyword_statebutton.innerHTML="※※※";
         }
     }
-    function showAndHideNewCode(){
+    function showAndHideNewCode(){//显示或者隐藏 “建立新条目” 区域
         newCode_div=document.getElementById("newCode");
         if(newCode_div.style.display=="none"){
             newCode_div.style.display="block"
