@@ -5,17 +5,15 @@
 <meta charset="utf-8">
 <title>个人密码管理</title>
 </head>
-<body>
- 
-    <div id="container" style="background-color:#00aaff;padding: 5px;">
- 
-        <div id="head" style="padding: 5px;">
+<body style="background-color:#00aaff;background-image: linear-gradient(to bottom right, #00aaff, #1155ee);background-repeat:no-repeat;background-position: left center;">
+    <div>
+        <div>
             <h1>密码管理</h1>
             解码关键字:<input id="keyword" type="password" style="width:25em;"><button id="statebutton" onclick="changeKeywordInputState()"><***></button>
             <br><br>
             <div style="background-color:#00bbee ;text-align: center;">
-                <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background-color:#00bbee;">建立新条目</button></center>
-                <div id="newCode">
+                <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background-color:#00bbee;"><u>建立新条目</u></button></center>
+                <div id="newCode" style="display: none;">
                     <br>
                     ID:<input id="id_input" style="width:25em;"><br>
                     信息:<br><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
@@ -25,14 +23,13 @@
             </div>
         </div>
          
-        <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;">
+        <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;background-image: linear-gradient(to bottom, #00ddcc, #11aabb);">
             <button id="bilibili" name="1234" onclick="showInfo(this.id,this.name)">哔哩哔哩</button><br>
         </div>
         <div id="content" style="background-color:#dddddd;">&nbsp;</div>
 		<div id="foot"style="background-color:#66aa99;float:inline-end;padding:1em;"><button>↑</button></div>
          
     </div>
-         
 </body>
 <script>
     function changeKeywordInputState(){//切换解码关键字输入框的显示模式（普通模式 密码模式）
