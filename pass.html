@@ -9,16 +9,19 @@
  
     <div id="container" style="background-color:#00aaff;padding: 5px;">
  
-        <div id="head" style="background-color:#00aaff;padding: 5px;">
+        <div id="head" style="padding: 5px;">
             <h1>密码管理</h1>
             解码关键字:<input id="keyword" type="password" style="width:25em;"><button id="statebutton" onclick="changeKeywordInputState()"><***></button>
             <br><br>
-            <div id="newCode" style="background-color:#00bbee ;text-align: center;">
-                <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background-color:#00bbee;">建立新条目</button></center><br>
-                ID:<input id="id_input" style="width:25em;"><br>
-                信息:<br><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
-                <button id="buttonGetCode">获得编码↓</button><br>
-                <textarea id="code_output" style="height:10em;width:25em;word-break: break-all;"></textarea>
+            <div style="background-color:#00bbee ;text-align: center;">
+                <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background-color:#00bbee;">建立新条目</button></center>
+                <div id="newCode">
+                    <br>
+                    ID:<input id="id_input" style="width:25em;"><br>
+                    信息:<br><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
+                    <button id="buttonGetCode">获得编码↓</button><br>
+                    <textarea id="code_output" style="height:10em;width:25em;word-break: break-all;"></textarea>
+                </div>
             </div>
         </div>
          
@@ -44,7 +47,12 @@
         }
     }
     function showAndHideNewCode(){
-
+        newCode_div=document.getElementById("newCode");
+        if(newCode_div.style.display=="none"){
+            newCode_div.style.display="block"
+        }else{
+            newCode_div.style.display="none"
+        }
     }
     function showInfo(id,infocode){//解码出真正的信息
         document.getElementById("content").innerHTML=id+"&nbsp"+infocode;
