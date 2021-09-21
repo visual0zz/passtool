@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>个人密码管理</title>
+</head>
+<body>
+ 
+    <div id="container">
+ 
+        <div id="head" style="background-color:#00aaff;">
+            <h1 style="margin-bottom:0;">密码管理</h1><br>
+            <br>
+        </div>
+         
+        <div id="menu" style="background-color:#00ddcc;float:left;">
+            <button id="bilibili" infocode="1234" onclick="showInfo(this.id,this.infocode)">哔哩哔哩</button>
+            <b>菜单</b><br>
+            HTML<br>
+            CSS<br>
+            JavaScript
+        </div>
+        
+        <div id="content" style="background-color:#dddddd;">&nbsp</div>
+		<div id="foot"style="background-color:#66aa99;float:inline-end;">&nbsp<br>&nbsp&nbsp&nbsp<button>↑</button>&nbsp&nbsp&nbsp<br>&nbsp</div>
+         
+    </div>
+         
+</body>
+<script>
+    function showInfo(id,infocode){
+        document.getElementById("content").innerHTML=id+"&nbsp"+infocode;
+    }
+</script>
+</html>
