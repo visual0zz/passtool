@@ -7,29 +7,46 @@
 </head>
 <body>
  
-    <div id="container">
+    <div id="container" style="background-color:#00aaff;padding: 5px;">
  
-        <div id="head" style="background-color:#00aaff;">
-            <h1 style="margin-bottom:0;">密码管理</h1><br>
-            <br>
+        <div id="head" style="background-color:#00aaff;padding: 5px;">
+            <h1>密码管理</h1>
+            解码关键字:<input id="keyword" type="password" style="width:25em;"><button id="statebutton" onclick="changeKeywordInputState()"><***></button>
+            <br><br>
+            <div id="newCode" style="background-color:#00bbee ;text-align: center;">
+                <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background-color:#00bbee;">建立新条目</button></center><br>
+                ID:<input id="id_input" style="width:25em;"><br>
+                信息:<br><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
+                <button id="buttonGetCode">获得编码↓</button><br>
+                <textarea id="code_output" style="height:10em;width:25em;word-break: break-all;"></textarea>
+            </div>
         </div>
          
-        <div id="menu" style="background-color:#00ddcc;float:left;">
-            <button id="bilibili" infocode="1234" onclick="showInfo(this.id,this.infocode)">哔哩哔哩</button>
-            <b>菜单</b><br>
-            HTML<br>
-            CSS<br>
-            JavaScript
+        <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;">
+            <button id="bilibili" name="1234" onclick="showInfo(this.id,this.name)">哔哩哔哩</button><br>
         </div>
-        
-        <div id="content" style="background-color:#dddddd;">&nbsp</div>
-		<div id="foot"style="background-color:#66aa99;float:inline-end;">&nbsp<br>&nbsp&nbsp&nbsp<button>↑</button>&nbsp&nbsp&nbsp<br>&nbsp</div>
+        <div id="content" style="background-color:#dddddd;">&nbsp;</div>
+		<div id="foot"style="background-color:#66aa99;float:inline-end;padding:1em;"><button>↑</button></div>
          
     </div>
          
 </body>
 <script>
-    function showInfo(id,infocode){
+    function changeKeywordInputState(){//切换解码关键字输入框的显示模式（普通模式 密码模式）
+        keyword_inputbox=document.getElementById('keyword');
+        keyword_statebutton=document.getElementById('statebutton');
+        if(keyword_inputbox.type=="password"){
+            keyword_inputbox.type="";
+            keyword_statebutton.innerHTML="<123>";
+        }else{
+            keyword_inputbox.type="password"
+            keyword_statebutton.innerHTML="<***>";
+        }
+    }
+    function showAndHideNewCode(){
+
+    }
+    function showInfo(id,infocode){//解码出真正的信息
         document.getElementById("content").innerHTML=id+"&nbsp"+infocode;
     }
 </script>
