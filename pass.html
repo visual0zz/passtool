@@ -9,16 +9,22 @@
     <div>
         <div>
             <h1>密码管理</h1>
+            <small><small><small><small>
+
+                信息的第一行如果放一个数字 可以控制显示哪一行密码<br/>
+            
+            </small></small></small></small>
+            <br/>
             <button id="statebutton" onclick="changeKeywordInputState()" style="border-style: none;background: none;padding: unset;">※※※</button>:<input id="keyword" style="width:25em;">
-            <br><br>
+            <br/><br/>
             <div style="border-style: dotted;">
                 <center><button onclick="showAndHideNewCode()"style="border-style: hidden;background:none;"><u>建立新条目</u></button></center>
                 <div id="newCode" style="display: none;">
-                    <br>
+                    <br/>
                     ID:<input id="id_input" style="width:25em;"><br>
                     名称:<input id="id_name" style="width:25em;"><br>
-                    信息:<br><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
-                    <br><button id="buttonGetCode" onclick="onButtonGetCode()">获得编码↓</button><br>
+                    信息:<br/><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
+                    <br/><button id="buttonGetCode" onclick="onButtonGetCode()">获得编码↓</button><br>
                     <textarea id="code_output" style="height:10em;width:25em;word-break: break-all;"></textarea>
                 </div>
             </div>
@@ -191,7 +197,7 @@
         name=document.getElementById("id_name").value;
         info=document.getElementById("info_input").value;
         encryptedInfo=encodeInfo(mainPasskey,id,info);//加密额外信息
-        finalCode='<button id="'+id+'" name="'+encryptedInfo+'" onclick="showItemInfo(this.id,this.name)">'+name+'</button><br>';
+        finalCode='<button id="'+id+'" name="'+encryptedInfo+'" onclick="showItemInfo(this.id,this.name)">'+name+'</button><br/>';
         document.getElementById("code_output").value=finalCode;
     }
 </script>
