@@ -25,7 +25,7 @@
         </div>
          
         <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;background-image: linear-gradient(to bottom, #00ddcc, #11aabb);">
-            <button id="bilibili" name="1234" onclick="showItemInfo(this.id,this.name)">哔哩哔哩</button><br>
+            <button id="bilibili" name="kr2mHTXf92vSxSsZwY310mH6qBuKrOdcKHf55lZnkhDtNhtByJb6cJCohCkASxTKNDIidrSGQXHlb06I1gEXCA==" onclick="showItemInfo(this.id,this.name)">哔哩哔哩</button><br>
         </div>
         <div id="content" style="background-color:#dddddd55;">&nbsp;</div>
 		<div id="foot"style="background-color:#66aa99;float:inline-end;padding:1em;"><button>↑</button></div>
@@ -161,14 +161,38 @@
         password=hash("pass".concat(mainkey,id));
         return decryptByAES(ciphertext,password);
     }
+    function makePassword(mainkey,id,passwordIndex){//创建密码字符串
+        seed=hash(encodeInfo(mainkey,id,"seed".concat(mainkey,id,passwordIndex)));
+        var data=[];
+        for(var i=0;i<=7;i++){//初始化数值缓冲区
+            data[i]=seed.charCodeAt(i)%10;
+        }
+        return "".concat(passwordIndex,"\t: ", data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7],"Ab#");
+    }
     function showItemInfo(id,infocode){//解密并展示一个条目的具体信息
         mainPasskey=document.getElementById("keyword").value;//获得主口令
-        out=uncodeInfo(mainPasskey,id,encodeInfo(mainPasskey,id,"恶魔妈妈买面膜"));
-        window.alert(out);
-        document.getElementById("content").innerHTML=id+"&nbsp"+infocode;
+        name=document.getElementById(id).innerHTML;
+        info=uncodeInfo(mainPasskey,id,infocode);
+        i=Math.max(parseInt(info)-2,1);
+        if(i==NaN)i=1;
+        document.getElementById("content").innerText=name+"\nID:"+id+"\n"
+        +"\n"+makePassword(mainPasskey,id,i)
+        +"\n"+makePassword(mainPasskey,id,i+1)
+        +"\n"+makePassword(mainPasskey,id,i+2)
+        +"\n"+makePassword(mainPasskey,id,i+3)
+        +"\n"+makePassword(mainPasskey,id,i+4)
+        +"\n"+makePassword(mainPasskey,id,i+5)
+        +"\n"+makePassword(mainPasskey,id,i+6)
+        +"\n\n额外信息:\n"+info;
     }
     function onButtonGetCode(){//计算新条目的代码
-        
+        mainPasskey=document.getElementById("keyword").value;//获得主口令
+        id="item_"+document.getElementById("id_input").value;//给用户设定id添加前缀以避免和代码内部使用的id冲突
+        name=document.getElementById("id_name").value;
+        info=document.getElementById("info_input").value;
+        encryptedInfo=encodeInfo(mainPasskey,id,info);//加密额外信息
+        finalCode='<button id="'+id+'" name="'+encryptedInfo+'" onclick="showItemInfo(this.id,this.name)">'+name+'</button><br>';
+        document.getElementById("code_output").value=finalCode;
     }
 </script>
 <script>//初始化
