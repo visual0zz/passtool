@@ -18,27 +18,55 @@
                     ID:<input id="id_input" style="width:25em;"><br>
                     名称:<input id="id_name" style="width:25em;"><br>
                     信息:<br><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
-                    <br><button id="buttonGetCode">获得编码↓</button><br>
+                    <br><button id="buttonGetCode" onclick="onButtonGetCode()">获得编码↓</button><br>
                     <textarea id="code_output" style="height:10em;width:25em;word-break: break-all;"></textarea>
                 </div>
             </div>
         </div>
          
         <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;background-image: linear-gradient(to bottom, #00ddcc, #11aabb);">
-            <button id="bilibili" name="1234" onclick="showInfo(this.id,this.name)">哔哩哔哩</button><br>
+            <button id="bilibili" name="1234" onclick="showItemInfo(this.id,this.name)">哔哩哔哩</button><br>
         </div>
-        <div id="content" style="background-color:#dddddd;">&nbsp;</div>
+        <div id="content" style="background-color:#dddddd55;">&nbsp;</div>
 		<div id="foot"style="background-color:#66aa99;float:inline-end;padding:1em;"><button>↑</button></div>
          
     </div>
 </body>
 <script>//哈希算法的实现
+    var global_iv="bnt578kib31562sm";
+
     function hash(str){//输入任意长度字符串，输出固定16个字节长度的字符串，满足密码key的需求
+        var data=[];
+        for(var i=0;i<=15;i++){//初始化数值缓冲区
+            data[i]=global_iv.charCodeAt(i)&255;
+        }
         
+        for(var i=0;i<str.length;i++){//写入一次
+            data[i]=(data[i%16]+str.charCodeAt(i))&255;
+        }
+        for(var i=0;i<=15;i++){//混乱一次
+            data[i]=(data[i]+data[(i+1)%16])&255;
+        }
+
+        for(var i=0;i<str.length;i++){//写入一次
+            data[i]=(data[i%16]+str.charCodeAt(i))&255;
+        }
+        for(var i=0;i<=15;i++){//混乱一次
+            data[i]=(data[i]+data[(i+1)%16])&255;
+        }
+        
+        for(var i=0;i<str.length;i++){//写入一次
+            data[i]=(data[i%16]+str.charCodeAt(i))&255;
+        }
+        for(var i=0;i<=15;i++){//混乱一次
+            data[i]=(data[i]+data[(i+1)%16])&255;
+        }
+        return String.fromCharCode(data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7],data[8],data[9],data[10],data[11],data[12],data[13],data[14],data[15]);
     }
 </script>
 <script>//AES算法的实现
-    //采用16字节的key和IV版本的AES算法 
+    //采用16字节的key和IV版本的AES算法  key和IV实际上只使用了字符串每个字符的最低字节 
+
     var CryptoJS=CryptoJS||function(u,p){var d={},l=d.lib={},s=function(){},t=l.Base={extend:function(a){s.prototype=this;var c=new s;a&&c.mixIn(a);c.hasOwnProperty("init")||(c.init=function(){c.$super.init.apply(this,arguments)});c.init.prototype=c;c.$super=this;return c},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.init.prototype.extend(this)}},
     r=l.WordArray=t.extend({init:function(a,c){a=this.words=a||[];this.sigBytes=c!=p?c:4*a.length},toString:function(a){return(a||v).stringify(this)},concat:function(a){var c=this.words,e=a.words,j=this.sigBytes;a=a.sigBytes;this.clamp();if(j%4)for(var k=0;k<a;k++)c[j+k>>>2]|=(e[k>>>2]>>>24-8*(k%4)&255)<<24-8*((j+k)%4);else if(65535<e.length)for(k=0;k<a;k+=4)c[j+k>>>2]=e[k>>>2];else c.push.apply(c,e);this.sigBytes+=a;return this},clamp:function(){var a=this.words,c=this.sigBytes;a[c>>>2]&=4294967295<<
     32-8*(c%4);a.length=u.ceil(c/4)},clone:function(){var a=t.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var c=[],e=0;e<a;e+=4)c.push(4294967296*u.random()|0);return new r.init(c,a)}}),w=d.enc={},v=w.Hex={stringify:function(a){var c=a.words;a=a.sigBytes;for(var e=[],j=0;j<a;j++){var k=c[j>>>2]>>>24-8*(j%4)&255;e.push((k>>>4).toString(16));e.push((k&15).toString(16))}return e.join("")},parse:function(a){for(var c=a.length,e=[],j=0;j<c;j+=2)e[j>>>3]|=parseInt(a.substr(j,
@@ -85,7 +113,6 @@
             data.sigBytes = i + 1;
         }
     };
-    var global_iv="bnt578kib31562sm"
     function encryptByAES(data, key){
         var data = CryptoJS.enc.Utf8.parse(data);
         var key  = CryptoJS.enc.Latin1.parse(key);
@@ -126,13 +153,23 @@
             newCode_div.style.display="none";
         }
     }
-    function showInfo(id,infocode){//解码出真正的信息
+    function encodeInfo(mainkey,id,plaintext){//将信息进行加密
+        password=hash("pass".concat(mainkey,id))
+        return encryptByAES(plaintext,password);
+    }
+    function uncodeInfo(mainkey,id,ciphertext){//解码出真正的信息
+        password=hash("pass".concat(mainkey,id));
+        return decryptByAES(ciphertext,password);
+    }
+    function showItemInfo(id,infocode){//解密并展示一个条目的具体信息
+        mainPasskey=document.getElementById("keyword").value;//获得主口令
+        out=uncodeInfo(mainPasskey,id,encodeInfo(mainPasskey,id,"恶魔妈妈买面膜"));
+        window.alert(out);
         document.getElementById("content").innerHTML=id+"&nbsp"+infocode;
     }
-    var end=encryptByAES("铭文","1111111111111111");
-    window.alert(end);
-    var ded=decryptByAES(end,"1111111111111111");
-    window.alert(ded);
+    function onButtonGetCode(){//计算新条目的代码
+        
+    }
 </script>
 <script>//初始化
     changeKeywordInputState();
