@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+read_link_tmp=$( readlink -f "${BASH_SOURCE[0]}" )
+dirname_tmp=$(dirname "$read_link_tmp" )
+script_path=$(cd "$dirname_tmp" && pwd )
+
+cd "$script_path"
+#计算自身所处位置，以定位其他脚本文件
+
+if [ $# -eq 0 ] ; then
+  message="自动提交"
+else
+    echo 参数错误
+    exit
+fi
+#如果没有提交消息，默认为“自动提交”，如果有多个参数就报错
+
+
+git add *
+git add .
+git commit -m "$message"
+#添加所有文件的改变并提交
+
+#提取本机ip 用于过滤掉目标ip是本机的仓库，不通过自动推送到本机仓库
+local_ips=$(ip address show scope global |grep -Eo 'inet *((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])'|grep -Eo '((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])')
+#echo local_ips=$local_ips ##调试用语句
+#遍历仓库列表文件
+for i in `cat $script_path/repolist.txt`
+do
+	#echo $i ##调试用语句
+	first_char=$(echo $i|grep -o ^. )
+
+	if [ "$first_char" != "#" ] ;then
+		#echo a ##调试用语句
+		ips_in_repo=$(echo $i|grep -Eo -m 1 '((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])') #提取出仓库地址里面的ip
+		#echo b ##调试用语句
+		ip="";for m in $ips_in_repo ;do ip=$m;break;done #过滤出第一个ip
+		mark=0;for lip in $local_ips;do if [ "$ip" == "$lip" ];then mark=1;fi;done ##判断本机ip是否匹配
+		#echo mark=$mark ip=$ip	##调试用语句	
+		if [ "$mark" == "1" ];then continue;fi ##调到下一个仓库
+
+		echo -e "\033[32m\033[01m git push $i master:master \033[0m"
+		timeout 20 git push --tags $i master:master
+	fi
+done
+#给push_to_each_repo加权限并执行,这个脚本会对repolist里存放的每个仓库地址进行push
+git remote update ##推送完毕后更新remote的本地跟踪状态
+
+git config --local alias.logs "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+#添加 git logs 指令，用不那么反人类的方式显示提交列表
+
+git config --local core.quotepath false
+#取消转意，这样git status显示时就不会把中文转意为\unicode编码数字
