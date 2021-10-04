@@ -32,11 +32,15 @@
          
         <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;background-image: linear-gradient(to bottom, #00ddcc, #11aabb);">
             
-            <iframe src="data.html" style="display:block;" id="datafile"></iframe>
+            <iframe src="/data.html" style="display:block;" id="datafile"></iframe>
+            <button onclick="test()">test</button>
             <script>
+                df=document.getElementById("datafile");
                 url=window.location.pathname.substring(0,window.location.pathname.lastIndexOf("/")+1);
-                txt=document.getElementById("data").contentWindow.document.innerHTML;
-                console.log(document.getElementById("data").contentWindow.document.getElementById("item_bilibili"));
+                df.src=url+"data.html";
+                function test(){
+                    console.log(df.contentWindow.document);
+                }
             </script>
         </div>
         <div id="content" style="background-color:#dddddd55;">&nbsp;</div>
