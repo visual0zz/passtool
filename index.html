@@ -31,8 +31,12 @@
         </div>
          
         <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;background-image: linear-gradient(to bottom, #00ddcc, #11aabb);">
+            
+            <iframe src="data.html" style="display:block;" id="datafile"></iframe>
             <script>
-                window.alert(window.location.pathname);
+                url=window.location.pathname.substring(0,window.location.pathname.lastIndexOf("/")+1);
+                txt=document.getElementById("data").contentWindow.document.innerHTML;
+                console.log(document.getElementById("data").contentWindow.document.getElementById("item_bilibili"));
             </script>
         </div>
         <div id="content" style="background-color:#dddddd55;">&nbsp;</div>
