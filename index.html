@@ -31,13 +31,15 @@
         </div>
          
         <div id="menu" style="background-color:#00ddcc;float:left;padding: 1em;background-image: linear-gradient(to bottom, #00ddcc, #11aabb);">
-            <iframe src="/data.html"></iframe>
+            <!-- <iframe src="data.html"></iframe> -->
+            <script>
+                window.onload=function(){document.getElementById("menu").innerHTML=document.getElementById("data").innerHTML;};
+            </script>
         </div>
         <div id="content" style="background-color:#dddddd55;">&nbsp;</div>
 		<div id="foot"style="background-color:#66aa99;float:inline-end;padding:1em;"><button>↑</button></div>
          
     </div>
-</body>
 <script>//哈希算法的实现
     var global_iv="bnt578kib31562sm";
 
@@ -205,4 +207,10 @@
     changeKeywordInputState();
     document.getElementById("newCode").style.display="none";
 </script>
+
+<div id="data" style="display: none;">
+    <button id="item_bilibili" name="1q+IrQbP2I5KIxB+/NB4PiLa0q2eHDLi2iCcWETUz+Rk8T4JijP8LLJIYry4HBJ5ZgsDTR4X5hn38tn/9w/TCA==" onclick="showItemInfo(this.id,this.name)">哔哩哔哩</button><br/>
+</div>
+
+</body>
 </html>

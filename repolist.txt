@@ -9,7 +9,7 @@
 git@gitee.com:visual0zz/passtool.git
 #码云
 
-#git@github:visual0zz/passtool.git
+git@github.com:visual0zz/passtool.git
 #github
 
 
