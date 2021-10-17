@@ -45,6 +45,7 @@
 
     function hash(str){//输入任意长度字符串，输出固定16个字节长度的字符串，满足密码key的需求
         var data=[];
+        str=str+"tail";
         for(var i=0;i<=15;i++){//初始化数值缓冲区
             data[i]=global_iv.charCodeAt(i)&255;
         }
@@ -180,7 +181,11 @@
     function showItemInfo(id,infocode){//解密并展示一个条目的具体信息
         mainPasskey=document.getElementById("keyword").value;//获得主口令
         name=document.getElementById(id).innerHTML;
-        info=uncodeInfo(mainPasskey,id,infocode);
+        if(infocode.length==0){//如果没有密文可供解密 就直接指定info
+            var info="1";
+        }else{
+            var info=uncodeInfo(mainPasskey,id,infocode);
+        }
         i=Math.max(parseInt(info)-2,1);
         if(i==NaN)i=1;
         document.getElementById("content").innerText=name+"\nID:"+id+"\n"
@@ -217,15 +222,16 @@
     <tr>  <td>j</td>  <td>13</td>  <td>q</td>  <td>19</td>  <td>v</td>  <td>23</td>  <td>y</td>  </tr>
 </table>
 <div id="data" style="display: none;">
+    <button id="item_bupt_info" name="VRHP6vQtx+4zwOTjWUJTcMU1uOh7RUAuZq5CHAEhQm8w7APXfyCw3T09YEbqj79jAZcZE969w3rWVXWnb0Jf1Qe0hReFrR1Sog7YqznM0Ch6QCzdyet9bbWUL7ly0TSAM787SC7xHYIYMx2n3VNUum7J2GsuHqP30AGKTfwuLuwhnDdINjaERIKoxjIfih7J+2ZMv+hLtU5km/Gvr3EYszpxBYio4EiBuE9bA7ZsdDwO4JcGNbAlsbDyh7pzHRO3NXe0prImdwlW3MdwkYW2PA==" onclick="showItemInfo(this.id,this.name)">北邮个人信息</button><br/>    ------------<br/>
+    <button id="item_alibaba" name="" onclick="showItemInfo(this.id,this.name)">个人域</button><br/>
+    <button id="item_dingtalk" name="" onclick="showItemInfo(this.id,this.name)">钉钉</button><br/>
+    <button id="item_zhifubao" name="" onclick="showItemInfo(this.id,this.name)">支付宝</button><br/>
     ------------<br/>
-    <button id="item_bilibili" name="FAVmO8LR6+zvMrgPUnF2Qw==" onclick="showItemInfo(this.id,this.name)">哔哩哔哩</button><br/>
+    <button id="item_apple" name="" onclick="showItemInfo(this.id,this.name)">苹果账号</button><br/>
+    <button id="item_microsoft" name="" onclick="showItemInfo(this.id,this.name)">微软账号</button><br/>
     ------------<br/>
-    <button id="item_alibaba" name="9AZEMGzXV4TPy/QHyjj6Vw==" onclick="showItemInfo(this.id,this.name)">个人域</button><br/>
-    <button id="item_dingtalk" name="9AZEMGzXV4TPy/QHyjj6Vw==" onclick="showItemInfo(this.id,this.name)">钉钉</button><br/>
-    ------------<br/>
-    <button id="item_wechat" name="9AZEMGzXV4TPy/QHyjj6Vw==" onclick="showItemInfo(this.id,this.name)">微信</button><br/>
-    <button id="item_qq" name="9AZEMGzXV4TPy/QHyjj6Vw==" onclick="showItemInfo(this.id,this.name)">QQ</button><br/>
-    <button id="item_qq" name="aHoW2ghvflOeiS/UFuGLUg==" onclick="showItemInfo(this.id,this.name)">QQ</button><br/>
+    <button id="item_wechat" name="" onclick="showItemInfo(this.id,this.name)">微信</button><br/>
+    <button id="item_qq" name="" onclick="showItemInfo(this.id,this.name)">QQ</button><br/>
 </div>
 
 </body>
