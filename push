@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-read_link_tmp=$( readlink -f "${BASH_SOURCE[0]}" )
-dirname_tmp=$(dirname "$read_link_tmp" )
+dirname_tmp=$(dirname "$0" )
 script_path=$(cd "$dirname_tmp" && pwd )
 
 cd "$script_path"
