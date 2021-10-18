@@ -55,3 +55,4 @@ git config --local alias.logs "log --graph --pretty=format:'%Cred%h%Creset -%C(y
 
 git config --local core.quotepath false
 #取消转意，这样git status显示时就不会把中文转意为\unicode编码数字
+ 
