@@ -1,0 +1,1 @@
+<button id="item_alipay" name="" onclick="showItemInfo(this.id,this.name)">支付宝</button><br/>

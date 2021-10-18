@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+dirname_tmp=$(dirname "$0" )
+script_path=$(cd "$dirname_tmp" && pwd )
+cd "$script_path"
+
+datastr=$(cat data/*)
+prefix1=$(cat model.html)
+prefix2="<div id="data" style="display: none;">"
+suffix="</div></body></html>"
+
+final=$prefix1$prefix2$datastr$suffix
+echo $final > index.html
