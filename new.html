@@ -181,13 +181,13 @@
     function showItemInfo(id,infocode){//解密并展示一个条目的具体信息
         mainPasskey=document.getElementById("keyword").value;//获得主口令
         name=document.getElementById(id).innerHTML;
-        if(infocode.length==0){//如果没有密文可供解密 就直接指定info
-            var info="1";
+        if(infocode.length==0){//如果没有密文可供解密 就直接过
+            var info="";
         }else{
             var info=uncodeInfo(mainPasskey,id,infocode);
         }
         var i=Math.max(parseInt(info)-2,1);
-        if(i.isNaN())i=1;
+        if(isNaN(i))i=1;
         document.getElementById("content").innerText=name+"\nID:"+id+"\n"
         +"\n"+makePassword(mainPasskey,id,i)
         +"\n"+makePassword(mainPasskey,id,i+1)
