@@ -6,8 +6,11 @@ cd "$script_path"
 
 datastr=$(cat data/*)
 prefix1=$(cat model.html)
-prefix2="<div id="data" style="display: none;">"
-suffix="</div></body></html>"
+prefix2='
+<div id="data" style="display: none;">
+'
+suffix='
+</div></body></html>'
 
-final=$prefix1$prefix2$datastr$suffix
-echo $final > index.html
+final="$prefix1$prefix2$datastr$suffix"
+echo "$final" > index.html
