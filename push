@@ -33,7 +33,7 @@ echo local_ips=$local_ips ##调试用语句
 for i in `cat $script_path/repolist.txt`
 do
 	#echo $i ##调试用语句
-	first_char=$(echo $i|grep -o ^. )
+	first_char=$(echo $i|grep -o "^." )
 	echo first_char=$first_char
 	if [ "$first_char" != "#" ] ;then
 		#echo a ##调试用语句
