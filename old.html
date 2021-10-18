@@ -22,7 +22,7 @@
                 <div id="newCode" style="display: none;">
                     <br/>
                     ID:<input id="id_input" style="width:25em;"><br>
-                    名称:<input id="name_input" style="width:25em;"><br>
+                    名称:<input id="id_name" style="width:25em;"><br>
                     信息:<br/><textarea id="info_input" style="height: 10em;width: 25em;word-break: break-all;"></textarea>><br>
                     <br/><button id="buttonGetCode" onclick="onButtonGetCode()">获得编码↓</button><br>
                     <textarea id="code_output" style="height:10em;width:25em;word-break: break-all;"></textarea>
@@ -54,21 +54,21 @@
             data[i]=(data[i%16]*str.charCodeAt(i))&255;
         }
         for(var i=0;i<=15;i++){//混乱一次
-            data[(i+3)%16]=(data[i]^data[(i+3)%16])&255;
+            data[i]=(data[i]|data[(i+1)%16])&255;
         }
 
         for(var i=0;i<str.length;i++){//写入一次
-            data[i]=(data[i%16]*str.charCodeAt((i+7)%str.length))&255;
+            data[i]=(data[i%16]^str.charCodeAt((i+16)%str.length))&255;
         }
-        for(var i=15;i>=0;i--){//混乱一次
-            data[i]=(data[i]^data[(i+5)%16])&255;
+        for(var i=0;i<=15;i++){//混乱一次
+            data[i]=(data[i]+data[(i+1)%16])&255;
         }
         
         for(var i=0;i<str.length;i++){//写入一次
-            data[i]=(data[i%16]*str.charCodeAt((i+31)%str.length))&255;
+            data[i]=(data[i%16]^str.charCodeAt((i+32)%str.length))&255;
         }
         for(var i=0;i<=15;i++){//混乱一次
-            data[(i+1)%16]=(data[i]^data[(i+1)%16])&255;
+            data[i]=(data[i]*data[(i+1)%16])&255;
         }
         return String.fromCharCode(data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7],data[8],data[9],data[10],data[11],data[12],data[13],data[14],data[15]);
     }
@@ -171,7 +171,7 @@
         return decryptByAES(ciphertext,password);
     }
     function makePassword(mainkey,id,passwordIndex){//创建密码字符串
-        seed=hash("seed".concat(passwordIndex,mainkey,id));
+        seed=hash(encodeInfo(mainkey,id,"seed".concat(mainkey,id,passwordIndex)));
         var data=[];
         for(var i=0;i<=7;i++){//初始化数值缓冲区
             data[i]=seed.charCodeAt(i)%10;
@@ -181,13 +181,13 @@
     function showItemInfo(id,infocode){//解密并展示一个条目的具体信息
         mainPasskey=document.getElementById("keyword").value;//获得主口令
         name=document.getElementById(id).innerHTML;
-        if(infocode.length==0){//如果没有密文可供解密 就直接过
-            var info="";
+        if(infocode.length==0){//如果没有密文可供解密 就直接指定info
+            var info="1";
         }else{
             var info=uncodeInfo(mainPasskey,id,infocode);
         }
-        var i=Math.max(parseInt(info)-2,1);
-        if(isNaN(i))i=1;
+        i=Math.max(parseInt(info)-2,1);
+        if(i==NaN)i=1;
         document.getElementById("content").innerText=name+"\nID:"+id+"\n"
         +"\n"+makePassword(mainPasskey,id,i)
         +"\n"+makePassword(mainPasskey,id,i+1)
@@ -197,16 +197,11 @@
         +"\n"+makePassword(mainPasskey,id,i+5)
         +"\n"+makePassword(mainPasskey,id,i+6)
         +"\n\n额外信息:\n"+info;
-
-        //将解密的信息写入上方的编辑器以方便更新数据
-        document.getElementById("id_input").value=id.substr(fromCharCode=5);//去除前面添加的防碰撞标签item_
-        document.getElementById("name_input").value=name;
-        document.getElementById("info_input").value=info;
     }
     function onButtonGetCode(){//计算新条目的代码
         mainPasskey=document.getElementById("keyword").value;//获得主口令
         id="item_"+document.getElementById("id_input").value;//给用户设定id添加前缀以避免和代码内部使用的id冲突
-        name=document.getElementById("name_input").value;
+        name=document.getElementById("id_name").value;
         info=document.getElementById("info_input").value;
         encryptedInfo=encodeInfo(mainPasskey,id,info);//加密额外信息
         finalCode='<button id="'+id+'" name="'+encryptedInfo+'" onclick="showItemInfo(this.id,this.name)">'+name+'</button><br/>';
