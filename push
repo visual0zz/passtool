@@ -44,7 +44,7 @@ do
 		if [ "$mark" == "1" ];then continue;fi ##调到下一个仓库
 
 		echo -e "\033[32m\033[01m git push $i master:master \033[0m"
-		timeout 20 git push --tags $i master:master
+		git push --tags $i master:master
 	fi
 done
 #给push_to_each_repo加权限并执行,这个脚本会对repolist里存放的每个仓库地址进行push
