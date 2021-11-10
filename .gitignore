@@ -1,1 +1,7 @@
 /.vs
+*.iml
+*.idea
+.mvn
+!.mvn/wrapper/maven-wrapper.properties
+.idea
+.gradle
