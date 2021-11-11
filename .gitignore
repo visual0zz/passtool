@@ -4,5 +4,6 @@
 .mvn/*
 !.mvn/wrapper/maven-wrapper.properties
 .idea
+/temptest
 .gradle
 .DS_Store
