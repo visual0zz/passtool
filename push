@@ -27,24 +27,18 @@ else #如果是其他linux系统
 	local_ips=$(ip address show scope global |grep -Eo 'inet *((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])'|grep -Eo '((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])')
 fi
 #提取本机ip 用于过滤掉目标ip是本机的仓库，不通过自动推送到本机仓库
-#echo local_ips=$local_ips ##调试用语句
 #遍历仓库列表文件
 for i in `cat $script_path/repolist.txt`
 do
-	#echo $i ##调试用语句
 	first_char=$(echo $i|grep -o "#" )
-	#echo first_char=$first_char #调试语句
 	if [ "$first_char" != "#" ] ;then
-		#echo a ##调试用语句
 		ips_in_repo=$(echo $i|grep -Eo -m 1 '((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])') #提取出仓库地址里面的ip
-		#echo b ##调试用语句
 		ip="";for m in $ips_in_repo ;do ip=$m;break;done #过滤出第一个ip
 		mark=0;for lip in $local_ips;do if [ "$ip" == "$lip" ];then mark=1;fi;done ##判断本机ip是否匹配
-		#echo mark=$mark ip=$ip	##调试用语句	
 		if [ "$mark" == "1" ];then continue;fi ##调到下一个仓库
 
 		echo -e "\033[32m\033[01m git push $i master:master \033[0m"
-		git push --tags $i master:master
+		git push $i master:master
 	fi
 done
 #给push_to_each_repo加权限并执行,这个脚本会对repolist里存放的每个仓库地址进行push
