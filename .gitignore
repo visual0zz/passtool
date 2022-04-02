@@ -7,3 +7,6 @@
 /temptest
 .gradle
 .DS_Store
+/origin_data/*
+codes/design/java/build/*
+*.class
