@@ -151,7 +151,7 @@ public final class ZeaData implements Iterable<Integer> {
     }
 
     public String transferToString() {
-        int[] sourceData = (isAligned() ? unalign() : this).data.stream().mapToInt(Integer::valueOf).toArray();
+        int[] sourceData = this.data.stream().mapToInt(Integer::valueOf).toArray();
         StringBuilder result = new StringBuilder();
         for (int c : sourceData) {
             result.append((char)c);
@@ -167,7 +167,19 @@ public final class ZeaData implements Iterable<Integer> {
      */
     public <T> List<T> transferToList(Class<T> clazz) {
         List<T> result = new ArrayList<>();
-        return null;// todo 添加转换的实际代码
+        int[] sourceData = this.data.stream().mapToInt(Integer::valueOf).toArray();
+        if (clazz == Byte.class) {
+
+        } else if (clazz == Character.class) {
+
+        } else if (clazz == Short.class) {
+
+        } else if (clazz == Integer.class) {
+            ParamCheckUtil.assertTrue(sourceData.length % 2 == 0, "");
+        } else if (clazz == Long.class) {
+
+        }
+        return result;// todo 添加转换的实际代码
     }
 
     ////////////////////////////// private ////////////////////////////////
