@@ -58,11 +58,21 @@ class ZeaDataTest {
         Assertions.assertEquals(0, data.get(3));
         Assertions.assertEquals(0, data.get(4));
         Assertions.assertEquals(0, data.get(7));
-        System.out.println(zeaData2);
     }
 
     @Test
-    void to() {}
+    void to() {
+        Assertions.assertEquals(zeaData.transferToString(), zeaData.align(123).unalign().transferToString());
+        Assertions.assertEquals(zeaData.transferToList(Integer.class),
+            zeaData.align(123).unalign().transferToList(Integer.class));
+        Assertions.assertEquals("天王盖地虎", zeaData.transferToString());
+        List<Integer> data = new ArrayList<>();
+        data.add(22825);
+        data.add(22825);
+        ZeaData zeaData1 = ZeaData.from(data);
+        System.out.println(zeaData1);
+        Assertions.assertEquals(data, zeaData1.transferToList(Integer.class));
+    }
     private List<Integer> getData(ZeaData zeaData) {
         try {
             Field data = ZeaData.class.getDeclaredField("data");
