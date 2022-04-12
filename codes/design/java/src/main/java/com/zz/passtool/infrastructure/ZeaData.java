@@ -150,6 +150,11 @@ public final class ZeaData implements Iterable<Integer> {
         throw new DataFormatTransferException("cant create ZeaData from:" + obj.getClass().getCanonicalName());
     }
 
+    /**
+     * 将ZeaData转换为字符串
+     * 
+     * @return 字符串
+     */
     public String transferToString() {
         int[] sourceData = this.data.stream().mapToInt(Integer::valueOf).toArray();
         StringBuilder result = new StringBuilder();
@@ -158,7 +163,7 @@ public final class ZeaData implements Iterable<Integer> {
         }
         return result.toString();
     }
-    
+
     /**
      * 将ZeaData转换为别的什么类型的列表
      *
@@ -166,20 +171,42 @@ public final class ZeaData implements Iterable<Integer> {
      * @return 转换后的对象
      */
     public <T> List<T> transferToList(Class<T> clazz) {
-        List<T> result = new ArrayList<>();
+        List result = null;
         int[] sourceData = this.data.stream().mapToInt(Integer::valueOf).toArray();
         if (clazz == Byte.class) {
-
+            result = new ArrayList<Byte>();
+            for (int s : sourceData) {
+                result.add((byte)s);
+            }
         } else if (clazz == Character.class) {
-
+            result = new ArrayList<Character>();
+            for (int s : sourceData) {
+                result.add((char)s);
+            }
         } else if (clazz == Short.class) {
-
+            result = new ArrayList<Short>();
+            for (int s : sourceData) {
+                result.add((short)s);
+            }
         } else if (clazz == Integer.class) {
-            ParamCheckUtil.assertTrue(sourceData.length % 2 == 0, "");
+            result = new ArrayList<Integer>();
+            for (int index = 0; index + 1 < sourceData.length; index += 2) {
+                int dataL = sourceData[index] & 0xff;
+                int dataH = sourceData[index + 1] & 0xff;
+                result.add(dataH << 16 | dataL);
+            }
         } else if (clazz == Long.class) {
-
+            result = new ArrayList<Long>();
+            for (int index = 0; index + 3 < sourceData.length; index += 4) {
+                int dataLL = sourceData[index] & 0xff;
+                int dataLH = sourceData[index + 1] & 0xff;
+                int dataHL = sourceData[index + 2] & 0xff;
+                int dataHH = sourceData[index + 3] & 0xff;
+                result.add(dataHH << 48 | dataHL << 32 | dataLH << 16 | dataLL);
+            }
         }
-        return result;// todo 添加转换的实际代码
+        ParamCheckUtil.assertTrue(result != null, "unsupported type:" + clazz.getCanonicalName());
+        return result;
     }
 
     ////////////////////////////// private ////////////////////////////////
