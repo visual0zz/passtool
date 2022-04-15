@@ -25,7 +25,6 @@ class ZeaDataTest {
         ZeaData alignedZeaData = zeaData.align(3);
         List<Integer> data = getData(alignedZeaData);
         Assertions.assertNotNull(data);
-        System.out.println(data);
         Assertions.assertEquals(0, data.get(data.size() - 1));
         Assertions.assertEquals(5, data.get(data.size() - 2));
         Assertions.assertEquals(3, data.get(data.size() - 3));
@@ -157,9 +156,6 @@ class ZeaDataTest {
             data.add(random.nextLong());
             ZeaData zeaData = ZeaData.from(data);
             ZeaData zeaData1 = zeaData.align(23).unalign();
-            System.out.println("data=" + data);
-            System.out.println("zeaData=" + zeaData);
-            System.out.println("zeaData=" + zeaData1);
             Assertions.assertEquals(data, zeaData1.transferToList(Long.class));
         }
     }

@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.zz.passtool.interfaces.exception.DataFormatTransferException;
+import com.zz.passtool.interfaces.tag.ReadOnly;
 import com.zz.utils.ParamCheckUtil;
 
 /**
@@ -20,7 +21,7 @@ import com.zz.utils.ParamCheckUtil;
  * @author 书台
  * @since 2022/4/6 8:28 下午
  */
-
+@ReadOnly
 public final class ZeaData implements Iterable<Integer> {
 
     /**
