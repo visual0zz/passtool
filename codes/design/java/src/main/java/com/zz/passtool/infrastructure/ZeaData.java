@@ -122,15 +122,15 @@ public final class ZeaData implements Iterable<Integer> {
             return merge(Arrays.stream(array).map(ZeaData::from).toArray(ZeaData[]::new));
         } else if (obj instanceof Byte) {
             List<Integer> data = new ArrayList<>();
-            data.add(((int)obj) & 0xff);
+            data.add(((int)(byte)obj) & 0xff);
             return new ZeaData(data);
         } else if (obj instanceof Character) {
             List<Integer> data = new ArrayList<>();
-            data.add(((int)obj) & 0xffff);
+            data.add(((int)(char)obj) & 0xffff);
             return new ZeaData(data);
         } else if (obj instanceof Short) {
             List<Integer> data = new ArrayList<>();
-            data.add(((int)obj) & 0xffff);
+            data.add(((int)(short)obj) & 0xffff);
             return new ZeaData(data);
         } else if (obj instanceof Integer) {
             int originData = (int)obj;
@@ -198,10 +198,10 @@ public final class ZeaData implements Iterable<Integer> {
         } else if (clazz == Long.class) {
             result = new ArrayList<Long>();
             for (int index = 0; index + 3 < sourceData.length; index += 4) {
-                int dataLL = sourceData[index] & 0xffff;
-                int dataLH = sourceData[index + 1] & 0xffff;
-                int dataHL = sourceData[index + 2] & 0xffff;
-                int dataHH = sourceData[index + 3] & 0xffff;
+                long dataLL = sourceData[index] & 0xffff;
+                long dataLH = sourceData[index + 1] & 0xffff;
+                long dataHL = sourceData[index + 2] & 0xffff;
+                long dataHH = sourceData[index + 3] & 0xffff;
                 result.add(dataHH << 48 | dataHL << 32 | dataLH << 16 | dataLL);
             }
         }
