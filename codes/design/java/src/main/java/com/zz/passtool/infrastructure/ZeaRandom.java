@@ -1,7 +1,6 @@
 package com.zz.passtool.infrastructure;
 
 import java.util.Collections;
-import java.util.Random;
 
 /**
  * @author 书台
@@ -17,7 +16,6 @@ public class ZeaRandom {
 
         public Seed(ZeaData data){
             this.data=data.align(Constants.ALGORITHM_BLOCK_SIZE);
-            Random
         }
 
         public static Seed of(Integer integer) {
