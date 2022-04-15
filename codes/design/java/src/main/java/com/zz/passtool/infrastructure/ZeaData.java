@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.zz.passtool.interfaces.exception.DataFormatTransferException;
@@ -22,19 +19,21 @@ import com.zz.utils.ParamCheckUtil;
  * @since 2022/4/6 8:28 下午
  */
 @ReadOnly
-public final class ZeaData implements Iterable<Integer> {
+public final class ZeaData {
 
     /**
      * 在执行对齐填充时的最小填充长度,填充的格式为[原始数据,0...,对齐模，原始长度值低位，原始长度值高位],其中原始长度为整数
      */
     private static final int    MIN_ALIGN_LENGTH = 3;
-
+    private static final int    HASH_MULTIPLIER_A = 12347;
+    private static final int    HASH_MULTIPLIER_B = 54323;
+    private static final int[]  HASH_INDEX_JUMP   = new int[] {3, 5, 7, 11, 13, 19, 23, 29, 31};
     /**
      * 数据
      */
     private final List<Integer> data;
 
-    ////////////////////////////// public ////////////////////////////////
+    ////////////////////////////// 填充 ////////////////////////////////
 
     /**
      * 数据是否是经过对齐的
@@ -88,6 +87,8 @@ public final class ZeaData implements Iterable<Integer> {
             return new ZeaData(data.subList(0, alignmentInfo.originDataLength));
         }
     }
+
+    ////////////////////////////// 转换 ////////////////////////////////
 
     /**
      * 将多个数据合并
@@ -210,6 +211,71 @@ public final class ZeaData implements Iterable<Integer> {
         return result;
     }
 
+    ////////////////////////////// 内部数据 ////////////////////////////////
+
+    /**
+     * 由内部表示直接构造ZeaData
+     * 
+     * @param rawData 数据的内部表示
+     * @return ZeaData对象
+     */
+    public static ZeaData fromRawData(Collection<Integer> rawData) {
+        ZeaData zeaData = new ZeaData(new ArrayList<>(rawData));
+        return zeaData;
+    }
+
+    /**
+     * 获得内部的数据表示
+     * 
+     * @return 内部数据的复制
+     */
+    public List<Integer> getRawData() {
+        return new ArrayList<>(data);
+    }
+
+    ////////////////////////////// 计算 ////////////////////////////////
+
+    /**
+     * 计算哈希
+     * 
+     * @param hashLength 目标哈希的长度
+     * @return 目标哈希数据
+     * 
+     */
+    public ZeaData zeaHash(int hashLength) {
+        ParamCheckUtil.assertTrue(hashLength <= this.data.size(), "hashLength is too long.");
+        List<Integer> targetData = new ArrayList<>(this.data.subList(0, hashLength));
+        for (int indexJump : HASH_INDEX_JUMP) {
+            for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
+                int sourceIndex = (targetIndex + 1) * indexJump % this.data.size();
+                targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
+                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
+            }
+        }
+        for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
+            targetData.set(targetIndex,
+                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 2) % targetData.size())));
+        }
+        for (int indexJump : HASH_INDEX_JUMP) {
+            for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
+                int sourceIndex = (targetIndex + 1) * indexJump % this.data.size();
+                targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
+                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
+            }
+        }
+        for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
+            targetData.set(targetIndex,
+                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 1) % targetData.size())));
+        }
+        for (int indexJump : HASH_INDEX_JUMP) {
+            for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
+                int sourceIndex = (targetIndex + 1) * indexJump % this.data.size();
+                targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
+                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
+            }
+        }
+        return fromRawData(targetData);
+    }
     ////////////////////////////// private ////////////////////////////////
 
     private static ZeaData fromString(String string) {
@@ -250,21 +316,6 @@ public final class ZeaData implements Iterable<Integer> {
             this.alignment = alignment;
             this.originDataLength = originDataLength;
         }
-    }
-
-    @Override
-    public Iterator<Integer> iterator() {
-        return data.iterator();
-    }
-
-    @Override
-    public void forEach(Consumer<? super Integer> action) {
-        data.forEach(action);
-    }
-
-    @Override
-    public Spliterator<Integer> spliterator() {
-        return data.spliterator();
     }
 
     @Override
