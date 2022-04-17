@@ -27,7 +27,7 @@ public final class ZeaData {
     private static final int    MIN_ALIGN_LENGTH = 3;
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
-    private static final int[]  HASH_INDEX_JUMP   = new int[] {3, 5, 7, 11, 13, 19, 23, 29, 31};
+    private static final int[]  HASH_INDEX_JUMP   = new int[] {3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 331};
     /**
      * 数据
      */
