@@ -262,7 +262,7 @@ public final class ZeaData {
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
-                int sourceIndex = (targetIndex + 1) * indexJump % this.data.size();
+                int sourceIndex = (targetIndex + 11) * indexJump % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
                     + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
@@ -273,7 +273,7 @@ public final class ZeaData {
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
-                int sourceIndex = (targetIndex + 1) * indexJump % this.data.size();
+                int sourceIndex = (targetIndex + 7) * indexJump % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
                     + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
