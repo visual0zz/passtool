@@ -162,8 +162,8 @@ class ZeaDataTest {
 
     @Test
     public void 测试哈希() {
-        ZeaData sourceData1 = ZeaData.from("@#$%^&*()~`!_=-+0987654321;:,.<>/?天朝上国泰民安全第一往无前朝旧梦abandon");
-        System.out.println("sourceData1=" + sourceData1);
+        ZeaData sourceData1 = ZeaData.from("66766");
+        System.out.println(sourceData1.align(10).zeaHash(10));
     }
     private List<Integer> getData(ZeaData zeaData) {
         try {
