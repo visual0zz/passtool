@@ -27,7 +27,8 @@ public final class ZeaData {
     private static final int    MIN_ALIGN_LENGTH = 3;
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
-    private static final int[]  HASH_INDEX_JUMP   = new int[] {3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 331};
+    private static final int[]  HASH_INDEX_JUMP   =
+        new int[] {1, 3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 79, 131, 257, 331};
     /**
      * 数据
      */
@@ -253,7 +254,11 @@ public final class ZeaData {
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex,
-                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 2) % targetData.size())));
+                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 7) % targetData.size())));
+        }
+        for (int sourceIndex = 0; sourceIndex < this.data.size(); sourceIndex++) {
+            int targetIndex = sourceIndex % targetData.size();
+            targetData.set(targetIndex, targetData.get(targetIndex) ^ this.data.get(sourceIndex));
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
@@ -264,7 +269,7 @@ public final class ZeaData {
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex,
-                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 1) % targetData.size())));
+                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 3) % targetData.size())));
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
@@ -272,6 +277,10 @@ public final class ZeaData {
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
                     + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
+        }
+        for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
+            targetData.set(targetIndex,
+                targetData.get(targetIndex) ^ targetData.get(targetData.get(targetIndex) % targetData.size()));
         }
         return fromRawData(targetData);
     }
