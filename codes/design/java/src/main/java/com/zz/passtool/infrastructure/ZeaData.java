@@ -220,8 +220,7 @@ public final class ZeaData {
      * @return ZeaData对象
      */
     public static ZeaData fromRawData(Collection<Integer> rawData) {
-        ZeaData zeaData = new ZeaData(new ArrayList<>(rawData));
-        return zeaData;
+        return new ZeaData(rawData.stream().map(e -> e & 0xffff).collect(Collectors.toList()));
     }
 
     /**
