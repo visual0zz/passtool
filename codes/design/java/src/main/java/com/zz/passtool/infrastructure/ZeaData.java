@@ -247,7 +247,7 @@ public final class ZeaData {
         List<Integer> targetData = new ArrayList<>(this.data.subList(0, hashLength));
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
-                int sourceIndex = (targetIndex + 1) * indexJump % this.data.size();
+                int sourceIndex = (targetIndex + indexJump) % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
                     + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
@@ -281,6 +281,13 @@ public final class ZeaData {
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex,
                 targetData.get(targetIndex) ^ targetData.get(targetData.get(targetIndex) % targetData.size()));
+        }
+        for (int indexJump : HASH_INDEX_JUMP) {
+            for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
+                int sourceIndex = (targetIndex + 1 + indexJump) % targetData.size();
+                targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
+                    + targetData.get(sourceIndex) * HASH_MULTIPLIER_B));
+            }
         }
         return fromRawData(targetData);
     }
