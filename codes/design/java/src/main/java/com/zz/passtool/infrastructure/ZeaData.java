@@ -24,7 +24,7 @@ public final class ZeaData {
     /**
      * 在执行对齐填充时的最小填充长度,填充的格式为[原始数据,0...,对齐模，原始长度值低位，原始长度值高位],其中原始长度为整数
      */
-    private static final int    MIN_ALIGN_LENGTH = 3;
+    private static final int    MIN_ALIGN_LENGTH  = 3;
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
     private static final int[]  HASH_INDEX_JUMP   =
@@ -54,25 +54,20 @@ public final class ZeaData {
     public ZeaData align(int alignment) {
         ParamCheckUtil.assertTrue(alignment < 0xffff, "align block is too large");
         ParamCheckUtil.assertTrue(alignment > 0, "invalid align block size ");
-        AlignmentInfo alignmentInfo = getAlignmentInfo();
-        if (alignmentInfo == null) {
-            List<Integer> fillData = new ArrayList<>();
-            // 尾部填充数据的核心部分是原始数据的长度信息
-            int size = data.size();
-            fillData.add((size >> 16) & 0xffff);
-            fillData.add(size & 0xffff);
-            fillData.add(alignment);
-            // 剩余部分填充0值,直到长度满足对齐的需要
-            while ((fillData.size() + this.data.size()) % alignment != 0) {
-                fillData.add(0);
-            }
-            Collections.reverse(fillData);
-            List<Integer> result = new ArrayList<>(this.data);
-            result.addAll(fillData);
-            return new ZeaData(result);
-        } else {
-            return this;
+        List<Integer> fillData = new ArrayList<>();
+        // 尾部填充数据的核心部分是原始数据的长度信息
+        int size = data.size();
+        fillData.add((size >> 16) & 0xffff);
+        fillData.add(size & 0xffff);
+        fillData.add(alignment);
+        // 剩余部分填充0值,直到长度满足对齐的需要
+        while ((fillData.size() + this.data.size()) % alignment != 0) {
+            fillData.add(0);
         }
+        Collections.reverse(fillData);
+        List<Integer> result = new ArrayList<>(this.data);
+        result.addAll(fillData);
+        return new ZeaData(result);
     }
 
     /**
