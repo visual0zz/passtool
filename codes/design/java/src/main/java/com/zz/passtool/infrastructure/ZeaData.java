@@ -249,7 +249,7 @@ public final class ZeaData {
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex,
-                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 7) % targetData.size())));
+                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 17) % targetData.size())));
         }
         for (int sourceIndex = 0; sourceIndex < this.data.size(); sourceIndex++) {
             int targetIndex = sourceIndex % targetData.size();
@@ -257,7 +257,7 @@ public final class ZeaData {
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
-                int sourceIndex = (targetIndex + 11) * indexJump % this.data.size();
+                int sourceIndex = (targetIndex + 31) * indexJump % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
                     + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
@@ -268,14 +268,15 @@ public final class ZeaData {
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
-                int sourceIndex = (targetIndex + 7) * indexJump % this.data.size();
+                int sourceIndex = (targetIndex + 137) * indexJump % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
                     + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex,
-                targetData.get(targetIndex) ^ targetData.get(targetData.get(targetIndex) % targetData.size()));
+                targetData.get(targetIndex)
+                    ^ targetData.get(targetData.get((targetIndex + 1) % targetData.size()) % targetData.size()));
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
@@ -284,6 +285,7 @@ public final class ZeaData {
                     + targetData.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
         }
+        System.out.println(targetData);
         return fromRawData(targetData);
     }
     ////////////////////////////// private ////////////////////////////////
