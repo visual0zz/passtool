@@ -279,14 +279,24 @@ public final class ZeaData {
                     ^ targetData.get(targetData.get((targetIndex + 1) % targetData.size()) % targetData.size()));
         }
         for (int indexJump : HASH_INDEX_JUMP) {
-            for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
-                int sourceIndex = (targetIndex + 1 + indexJump) % targetData.size();
-                targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
-                    + targetData.get(sourceIndex) * HASH_MULTIPLIER_B));
+            for (int targetIndex1 = 0; targetIndex1 < targetData.size(); targetIndex1++) {
+                int targetIndex2 = (targetIndex1 + 1 + indexJump) % targetData.size();
+                targetData.set(targetIndex1, 0xffff & (targetData.get(targetIndex1) * HASH_MULTIPLIER_A
+                    + targetData.get(targetIndex2) * HASH_MULTIPLIER_B));
             }
         }
         System.out.println(targetData);
         return fromRawData(targetData);
+    }
+
+    public ZeaData multi(ZeaData right) {
+        ParamCheckUtil.assertTrue(this.data.size() == right.data.size(), "two param must have same size.");
+        return null;// todo
+    }
+
+    public ZeaData div(ZeaData right) {
+        ParamCheckUtil.assertTrue(this.data.size() == right.data.size(), "two param must have same size.");
+        return null;// todo
     }
     ////////////////////////////// private ////////////////////////////////
 
