@@ -24,7 +24,9 @@ public final class ZeaData {
     /**
      * 在执行对齐填充时的最小填充长度,填充的格式为[原始数据,0...,对齐模，原始长度值低位，原始长度值高位],其中原始长度为整数
      */
-    private static final int    MIN_ALIGN_LENGTH  = 3;
+
+    private static final int    TURNS             = 8;                                                                        // 加密一共进行几轮
+    private static final int    MIN_ALIGN_LENGTH  = 3;                                                                        // 最小填充长度
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
     private static final int[]  HASH_INDEX_JUMP   =
@@ -274,9 +276,8 @@ public final class ZeaData {
             }
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
-            targetData.set(targetIndex,
-                targetData.get(targetIndex)
-                    ^ targetData.get(targetData.get((targetIndex + 1) % targetData.size()) % targetData.size()));
+            targetData.set(targetIndex, targetData.get(targetIndex)
+                ^ targetData.get(targetData.get((targetIndex + 1) % targetData.size()) % targetData.size()));
         }
         for (int sourceIndex = 0; sourceIndex < this.data.size(); sourceIndex++) {
             int targetIndex = (sourceIndex * 113 + 71) % targetData.size();
@@ -294,14 +295,24 @@ public final class ZeaData {
         return fromRawData(targetData);
     }
 
-    public ZeaData multi(ZeaData right) {
-        ParamCheckUtil.assertTrue(this.data.size() == right.data.size(), "two param must have same size.");
-        ZeaData left = this;
+    public ZeaData encrypt(ZeaData key) {
+        List<Integer> plain = this.align(3).data;
+        int[][] hashes = new int[TURNS][];
+        ZeaData hash = key.align(plain.size()).zeaHash(plain.size());
+        for (int turn = 0; turn < TURNS; turn++) {
+            hashes[turn] = hash.data.stream().mapToInt(Integer::intValue).toArray();
+            hash = hash.zeaHash(plain.size());
+        }
+        for (int turn = 1, indexJump = 1; turn < TURNS; turn++, indexJump *= 3) {
+            for (int indexA = 0; indexA < plain.size(); indexA++) {
+                int indexB = indexA + indexJump, indexC = indexB + indexJump;
+
+            }
+        }
         return null;// todo
     }
 
-    public ZeaData div(ZeaData right) {
-        ParamCheckUtil.assertTrue(this.data.size() == right.data.size(), "two param must have same size.");
+    public ZeaData decrypt(ZeaData key) {
         ZeaData left = this;
         return null;// todo
     }

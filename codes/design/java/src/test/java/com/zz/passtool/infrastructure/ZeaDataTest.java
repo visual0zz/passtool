@@ -166,6 +166,12 @@ class ZeaDataTest {
         System.out.println(sourceData1.align(10));
         System.out.println(sourceData1.align(10).zeaHash(10));
     }
+
+    @Test
+    public void 测试加解密() {
+
+    }
+
     private List<Integer> getData(ZeaData zeaData) {
         try {
             Field data = ZeaData.class.getDeclaredField("data");
