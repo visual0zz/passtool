@@ -107,17 +107,21 @@ function zeahash(data, hashLength) {
         targetData[targetIndex]=
             targetData[targetIndex] ^ targetData[targetData[(targetIndex+1)%targetData.length] % targetData.length];
     }
+    for(sourceIndex=0;sourceIndex<data.length;sourceIndex++){
+        targetIndex=(sourceIndex*113+71)% targetData.length;
+        targetData[targetIndex]=targetData[targetIndex]^data[sourceIndex];
+        targetIndex=(sourceIndex+1)%targetData.length;
+        targetData[targetIndex]=targetData[targetIndex]^data[sourceIndex];
+    }
     for (indexJump of HASH_INDEX_JUMP) {
         for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
             sourceIndex = (targetIndex + 1 + indexJump) % targetData.length;
             targetData[targetIndex]= 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_A + targetData[sourceIndex] * HASH_MULTIPLIER_B);
         }
     }
+    return targetData;
 }
 
-data = align(string2data("昆仑4@"), 17);
+data = align(string2data("昆仑#@13abc赑箜琳亵渎琅篌屃"), 10);
 console.info("data=", data);
-zeahash(data, 7);
-zeahash(data, 12);
-zeahash(data, 13);
-zeahash(data, 16);
+console.info("hash=",zeahash(data,10));
