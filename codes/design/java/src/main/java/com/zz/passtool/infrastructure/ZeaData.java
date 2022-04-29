@@ -25,7 +25,7 @@ public final class ZeaData {
      * 在执行对齐填充时的最小填充长度,填充的格式为[原始数据,0...,对齐模，原始长度值低位，原始长度值高位],其中原始长度为整数
      */
 
-    private static final int    TURNS             = 8;                                                                        // 加密一共进行几轮
+    private static final int    TURNS             = 16;                                                                       // 加密一共进行几轮
     private static final int    MIN_ALIGN_LENGTH  = 3;                                                                        // 最小填充长度
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
@@ -295,21 +295,54 @@ public final class ZeaData {
         return fromRawData(targetData);
     }
 
-    public ZeaData encrypt(ZeaData key) {
-        List<Integer> plain = this.align(3).data;
+    /**
+     * 加密
+     * 
+     * @param key 密钥
+     * @param salt 盐 可为空
+     * @return 加密后的数据
+     */
+    public ZeaData encrypt(ZeaData key, ZeaData salt) {
+        salt = salt == null ? ZeaData.from(1234) : salt;
+        List<Integer> targetData = this.align(4).data;
         int[][] hashes = new int[TURNS][];
-        ZeaData hash = key.align(plain.size()).zeaHash(plain.size());
+        ZeaData hash = merge(key, salt).align(targetData.size()).zeaHash(targetData.size());
         for (int turn = 0; turn < TURNS; turn++) {
             hashes[turn] = hash.data.stream().mapToInt(Integer::intValue).toArray();
-            hash = hash.zeaHash(plain.size());
+            hash = hash.zeaHash(targetData.size());
+            // 构造轮密钥
         }
-        for (int turn = 1, indexJump = 1; turn < TURNS; turn++, indexJump *= 3) {
-            for (int indexA = 0; indexA < plain.size(); indexA++) {
-                int indexB = indexA + indexJump, indexC = indexB + indexJump;
-
+        for (int turn = 1; turn < TURNS; turn++) {
+            for (int indexStart = 0; indexStart < targetData.size(); indexStart += 4) {
+                // 四个一组，组内互相异或
+                int[] tmp = new int[4];
+                tmp[0] = targetData.get(indexStart) ^ targetData.get(indexStart + 3) ^ targetData.get(indexStart + 1);
+                tmp[1] = targetData.get(indexStart + 1) ^ targetData.get(indexStart) ^ targetData.get(indexStart + 2);
+                tmp[2] =
+                    targetData.get(indexStart + 2) ^ targetData.get(indexStart + 1) ^ targetData.get(indexStart + 3);
+                tmp[3] = targetData.get(indexStart + 3) ^ targetData.get(indexStart + 2) ^ targetData.get(indexStart);
+                targetData.set(indexStart, tmp[0]);
+                targetData.set(indexStart + 1, tmp[1]);
+                targetData.set(indexStart + 2, tmp[2]);
+                targetData.set(indexStart + 3, tmp[3]);
             }
+
+            for (int index = 0; index < targetData.size(); index++) {
+                targetData.set(index, shift(targetData.get(index), index));
+                // 全体数据进行比特循环移位
+                targetData.set(index, targetData.get(index) ^ hashes[turn][index]);
+                // 全体数据和轮密钥异或
+            }
+            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length];
+            int index, temp = targetData.get(start);
+            for (index = start; index + indexJump < targetData.size(); index += indexJump) {
+                // 每组的第一个数字进行错位
+                targetData.set(index, targetData.get(index + indexJump));
+            }
+            targetData.set(index, temp);
+
         }
-        return null;// todo
+        return merge(ZeaData.from(salt.data.size()), salt, ZeaData.fromRawData(targetData));
     }
 
     public ZeaData decrypt(ZeaData key) {
@@ -318,6 +351,14 @@ public final class ZeaData {
     }
     ////////////////////////////// private ////////////////////////////////
 
+    private static int shift(int data, int shift) {
+        // 将data的低16字节进行循环位移 shift>0表示循环左移 shift<0表示循环右移
+        shift %= 16;
+        shift = shift > 0 ? shift : shift + 16;
+        data = data << shift;
+        data = data & 0xffff | (data >> 16) & 0xffff;
+        return data;
+    }
     private static ZeaData fromString(String string) {
         List<Integer> data = new ArrayList<>();
         for (char c : string.toCharArray()) {

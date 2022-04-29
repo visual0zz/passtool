@@ -1,6 +1,8 @@
 package com.zz.passtool.infrastructure;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -168,8 +170,21 @@ class ZeaDataTest {
     }
 
     @Test
-    public void 测试加解密() {
-
+    public void 测试位移() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method shift = ZeaData.class.getDeclaredMethod("shift", int.class, int.class);
+        shift.setAccessible(true);
+        Assertions.assertEquals(2, shift.invoke(null, 1, 1));
+        Assertions.assertEquals(4, shift.invoke(null, 1, 2));
+        Assertions.assertEquals(8, shift.invoke(null, 1, 3));
+        Assertions.assertEquals(16, shift.invoke(null, 1, 4));
+        Assertions.assertEquals(32768, shift.invoke(null, 1, 15));
+        Assertions.assertEquals(1, shift.invoke(null, 1, 16));
+        Assertions.assertEquals(2048, shift.invoke(null, 1, -5));
+        Assertions.assertEquals(4096, shift.invoke(null, 1, -4));
+        Assertions.assertEquals(8192, shift.invoke(null, 1, -3));
+        Assertions.assertEquals(16384, shift.invoke(null, 1, -2));
+        Assertions.assertEquals(32768, shift.invoke(null, 1, -1));
+        Assertions.assertEquals(1, shift.invoke(null, 1, 0));
     }
 
     private List<Integer> getData(ZeaData zeaData) {
