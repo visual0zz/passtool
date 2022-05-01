@@ -312,7 +312,7 @@ public final class ZeaData {
             hash = hash.zeaHash(targetData.size());
             // 构造轮密钥
         }
-        for (int turn = 1; turn < TURNS; turn++) {
+        for (int turn = 0; turn < TURNS; turn++) {
             for (int indexStart = 0; indexStart < targetData.size(); indexStart += 4) {
                 // 四个一组，组内互相异或
                 int[] tmp = new int[4];
