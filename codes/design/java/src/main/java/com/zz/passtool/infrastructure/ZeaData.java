@@ -330,17 +330,19 @@ public final class ZeaData {
             for (int index = 0; index < targetData.size(); index++) {
                 targetData.set(index, shift(targetData.get(index), index));
                 // 全体数据进行比特循环移位
-                targetData.set(index, targetData.get(index) ^ hashes[turn][index]);
-                // 全体数据和轮密钥异或
             }
-            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length];
+            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 1;
             int index, temp = targetData.get(start);
             for (index = start; index + indexJump < targetData.size(); index += indexJump) {
-                // 每组的第一个数字进行错位
+                // 进行错位
                 targetData.set(index, targetData.get(index + indexJump));
             }
             targetData.set(index, temp);
 
+            for (int i = 0; i < targetData.size(); i++) {
+                targetData.set(i, targetData.get(i) ^ hashes[turn][i]);
+                // 全体数据和轮密钥异或
+            }
         }
         return merge(ZeaData.from(salt.data.size()), salt, ZeaData.fromRawData(targetData));
     }
