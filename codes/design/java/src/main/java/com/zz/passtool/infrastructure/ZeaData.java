@@ -292,6 +292,10 @@ public final class ZeaData {
                     + targetData.get(targetIndex2) * HASH_MULTIPLIER_B));
             }
         }
+        for (int sourceIndex = 0; sourceIndex < this.data.size(); sourceIndex++) {
+            int targetIndex = (sourceIndex + 1) % targetData.size();
+            targetData.set(targetIndex, targetData.get(targetIndex) ^ this.data.get(sourceIndex));
+        }
         return fromRawData(targetData);
     }
 
@@ -308,7 +312,7 @@ public final class ZeaData {
         int[][] hashes = new int[TURNS][];
         ZeaData hash = merge(key, salt).align(targetData.size());
         for (int turn = 0; turn < TURNS; turn++) {
-            hash = hash.zeaHash(targetData.size());
+            hash = merge(hash, key, salt).zeaHash(targetData.size());
             hashes[turn] = hash.data.stream().mapToInt(Integer::intValue).toArray();
             // 构造轮密钥
         }
@@ -364,7 +368,7 @@ public final class ZeaData {
         int[][] hashes = new int[TURNS][];
         ZeaData hash = merge(key, salt).align(targetData.size());
         for (int turn = 0; turn < TURNS; turn++) {
-            hash = hash.zeaHash(targetData.size());
+            hash = merge(hash, key, salt).zeaHash(targetData.size());
             hashes[turn] = hash.data.stream().mapToInt(Integer::intValue).toArray();
             // 构造轮密钥
         }
@@ -375,14 +379,12 @@ public final class ZeaData {
             }
 
             int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
-            int cache = targetData.get(start);
             for (int index = start; index + indexJump < targetData.size(); index += indexJump) {
                 // 进行错位
                 int tmp = targetData.get(index + indexJump);
-                targetData.set(index + indexJump, cache);
-                cache = tmp;
+                targetData.set(index + indexJump, targetData.get(start));
+                targetData.set(start, tmp);
             }
-            targetData.set(start, cache);
 
             for (int index = 0; index < targetData.size(); index++) {
                 targetData.set(index, shift(targetData.get(index), -index));
@@ -405,8 +407,8 @@ public final class ZeaData {
         }
         return ZeaData.fromRawData(targetData).unalign();
     }
-    ////////////////////////////// private ////////////////////////////////
 
+    ////////////////////////////// private /////////////////////////////////
     private static int shift(int data, int shift) {
         // 将data的低16字节进行循环位移 shift>0表示循环左移 shift<0表示循环右移
         shift %= 16;

@@ -1,5 +1,5 @@
 
-HASH_INDEX_JUMP = [1, 3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 79, 131, 257, 331];
+var HASH_INDEX_JUMP = [1, 3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 79, 131, 257, 331];
 /**
  * 
  * @param {String} str 字符串
@@ -148,6 +148,10 @@ function zeahash(data, hashLength) {
             targetData[targetIndex]= 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_A + targetData[sourceIndex] * HASH_MULTIPLIER_B);
         }
     }
+    for(sourceIndex=0;sourceIndex<data.length;sourceIndex++){
+        targetIndex=(sourceIndex+1)%targetData.length;
+        targetData[targetIndex]=targetData[targetIndex]^data[sourceIndex];
+    }
     return targetData;
 }
 
@@ -174,13 +178,13 @@ function shift(d,shift) {
  * @returns 密文
  */
 function encrypt(data,key,salt) {
-    TURNS=16;
+    var TURNS=16;
     var salt = salt == null ? string2data("1234") : salt;
     var targetData = align(data,4);
     var hashes = [];
-    hash = align(key.concat(salt),targetData.length);
+    var hash = align(key.concat(salt),targetData.length);
     for (turn = 0; turn < TURNS; turn++) {
-        hash =zeahash(hash,targetData.length);
+        hash =zeahash(hash.concat(key,salt),targetData.length);
         hashes[turn] = hash;
         // 构造轮密钥
     }
@@ -228,41 +232,40 @@ function encrypt(data,key,salt) {
  * @returns 解密后的原文
  */
 function decrypt(data,key) {
-    TURNS=16;
+    var TURNS=16;
     saltLength = data[0]&0xffff|((0xffff&data[1])<<16);
     salt=data.slice(2,2+saltLength);
     var targetData = data.slice(2 + saltLength, data.length);
     var hashes = [];
-    hash = align(key.concat(salt),targetData.length);
+    var hash = align(key.concat(salt),targetData.length);
     for (turn = 0; turn < TURNS; turn++) {
-        hash =zeahash(hash,targetData.length);
+        hash =zeahash(hash.concat(key,salt),targetData.length);
         hashes[turn] = hash;
         // 构造轮密钥
     }
     for (turn = TURNS - 1; turn >= 0; turn--) {
-        for (i = 0; i < targetData.length; i++) {
+        for (var i = 0; i < targetData.length; i++) {
             targetData[i]=targetData[i]^hashes[turn][i];
             // 全体数据和轮密钥异或
         }
 
-        start = turn % targetData.length, indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 1;
-        cache = targetData[start];
-        for (index = start; index + indexJump < targetData.length; index += indexJump) {
+        var start = turn % targetData.length;
+        var indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
+        for (var index = start; index + indexJump < targetData.length; index += indexJump) {
             // 进行错位
             tmp = targetData[index + indexJump];
-            targetData[index+indexJump]=cache;
-            cache = tmp;
+            targetData[index+indexJump]=targetData[start];
+            targetData[start] = tmp;
         }
-        targetData[start]=cache;
     
-        for (index = 0; index < targetData.length; index++) {
+        for (var index = 0; index < targetData.length; index++) {
             targetData[index]=shift(targetData[index],-index);
             // 全体数据进行比特循环移位
         }
 
-        for (indexStart = 0; indexStart < targetData.length; indexStart += 4) {
+        for (var indexStart = 0; indexStart < targetData.length; indexStart += 4) {
             // 四个一组，组内互相异或
-            tmp=[];
+            var tmp=[];
             tmp[0] =targetData[indexStart]^targetData[indexStart+3]^targetData[indexStart+1];
             tmp[1] =targetData[indexStart+1]^targetData[indexStart]^targetData[indexStart+2];
             tmp[2] =targetData[indexStart+2]^targetData[indexStart+1]^targetData[indexStart+3];
@@ -276,8 +279,9 @@ function decrypt(data,key) {
     return unalign(targetData);
 }
 data = string2data("昆仑#@13abc赑箜琳亵渎琅篌屃");
+key=data;
 console.info("data=", data);
-data=encrypt(data,data);
+data=encrypt(data,key);
 console.info("encrypted=",data);
-data=decrypt(data,data);
+data=decrypt(data,key);
 console.info("decrypted=",data);
