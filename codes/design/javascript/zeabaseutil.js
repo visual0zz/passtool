@@ -178,7 +178,7 @@ function shift(d,shift) {
  * @returns 密文
  */
 function encrypt(data,key,salt) {
-    var TURNS=16;
+    var TURNS=32;
     var salt = salt == null ? string2data("1234") : salt;
     var targetData = align(data,4);
     var hashes = [];
@@ -206,7 +206,7 @@ function encrypt(data,key,salt) {
             targetData[index]=shift(targetData[index],index);
             // 全体数据进行比特循环移位
         }
-        start = turn % targetData.length, indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
+        start = turn % targetData.length, indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length]%targetData.length + 2;
         index=start, temp = targetData[start];
         for (index = start; index + indexJump < targetData.length; index += indexJump) {
             // 进行错位
@@ -232,7 +232,7 @@ function encrypt(data,key,salt) {
  * @returns 解密后的原文
  */
 function decrypt(data,key) {
-    var TURNS=16;
+    var TURNS=32;
     saltLength = data[0]&0xffff|((0xffff&data[1])<<16);
     salt=data.slice(2,2+saltLength);
     var targetData = data.slice(2 + saltLength, data.length);
@@ -250,7 +250,7 @@ function decrypt(data,key) {
         }
 
         var start = turn % targetData.length;
-        var indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
+        var indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length]%targetData.length + 2;
         for (var index = start; index + indexJump < targetData.length; index += indexJump) {
             // 进行错位
             tmp = targetData[index + indexJump];

@@ -25,7 +25,7 @@ public final class ZeaData {
      * 在执行对齐填充时的最小填充长度,填充的格式为[原始数据,0...,对齐模，原始长度值低位，原始长度值高位],其中原始长度为整数
      */
 
-    private static final int    TURNS             = 16;                                                                       // 加密一共进行几轮
+    private static final int    TURNS             = 32;                                                                       // 加密一共进行几轮
     private static final int    MIN_ALIGN_LENGTH  = 4;                                                                        // 最小填充长度
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
@@ -335,7 +335,8 @@ public final class ZeaData {
                 targetData.set(index, shift(targetData.get(index), index));
                 // 全体数据进行比特循环移位
             }
-            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
+            int start = turn % targetData.size(),
+                indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] % targetData.size() + 2;
             int index, temp = targetData.get(start);
             for (index = start; index + indexJump < targetData.size(); index += indexJump) {
                 // 进行错位
@@ -378,7 +379,8 @@ public final class ZeaData {
                 // 全体数据和轮密钥异或
             }
 
-            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
+            int start = turn % targetData.size(),
+                indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] % targetData.size() + 2;
             for (int index = start; index + indexJump < targetData.size(); index += indexJump) {
                 // 进行错位
                 int tmp = targetData.get(index + indexJump);
