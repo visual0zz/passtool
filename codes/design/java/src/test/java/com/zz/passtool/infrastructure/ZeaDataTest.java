@@ -168,9 +168,8 @@ class ZeaDataTest {
 
     @Test
     public void 测试哈希() {
-        ZeaData sourceData1 = ZeaData.from("昆仑#@13abc赑箜琳亵渎琅篌屃");
-        System.out.println(sourceData1.align(10));
-        System.out.println(sourceData1.align(10).zeaHash(10));
+        ZeaData sourceData = ZeaData.from("昆仑#@13abc赑箜琳亵渎琅篌屃");
+        System.out.println(sourceData.encrypt(sourceData));
     }
 
     @Test

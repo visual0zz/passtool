@@ -331,7 +331,7 @@ public final class ZeaData {
                 targetData.set(index, shift(targetData.get(index), index));
                 // 全体数据进行比特循环移位
             }
-            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 1;
+            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
             int index, temp = targetData.get(start);
             for (index = start; index + indexJump < targetData.size(); index += indexJump) {
                 // 进行错位
@@ -374,7 +374,7 @@ public final class ZeaData {
                 // 全体数据和轮密钥异或
             }
 
-            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 1;
+            int start = turn % targetData.size(), indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] + 2;
             int cache = targetData.get(start);
             for (int index = start; index + indexJump < targetData.size(); index += indexJump) {
                 // 进行错位
