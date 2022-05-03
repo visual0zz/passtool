@@ -49,8 +49,9 @@ class ZeaDataTest {
         ZeaData zeaData1 = ZeaData.from(data);
         ZeaData zeaData2 = zeaData1.align(2);
         data = getData(zeaData2);
-        System.out.println(data);
+        Assertions.assertEquals(22825, data.get(0));
         Assertions.assertEquals(0, data.get(1));
+        Assertions.assertEquals(22825, data.get(2));
         Assertions.assertEquals(0, data.get(3));
         Assertions.assertEquals(2, data.get(4));
         Assertions.assertEquals(0, data.get(5));
