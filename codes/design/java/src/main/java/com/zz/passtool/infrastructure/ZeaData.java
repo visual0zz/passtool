@@ -25,8 +25,8 @@ public final class ZeaData {
      * 在执行对齐填充时的最小填充长度,填充的格式为[原始数据,0...,对齐模，原始长度值低位，原始长度值高位],其中原始长度为整数
      */
 
-    private static final int    TURNS             = 1;                                                                        // 加密一共进行几轮
-    private static final int    MIN_ALIGN_LENGTH  = 3;                                                                        // 最小填充长度
+    private static final int    TURNS             = 16;                                                                       // 加密一共进行几轮
+    private static final int    MIN_ALIGN_LENGTH  = 4;                                                                        // 最小填充长度
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
     private static final int[]  HASH_INDEX_JUMP   =
@@ -54,14 +54,14 @@ public final class ZeaData {
      * @return 对齐之后的数据
      */
     public ZeaData align(int alignment) {
-        ParamCheckUtil.assertTrue(alignment < 0xffff, "align block is too large");
         ParamCheckUtil.assertTrue(alignment > 0, "invalid align block size ");
         List<Integer> fillData = new ArrayList<>();
         // 尾部填充数据的核心部分是原始数据的长度信息
         int size = data.size();
         fillData.add((size >> 16) & 0xffff);
         fillData.add(size & 0xffff);
-        fillData.add(alignment);
+        fillData.add((alignment >> 16) & 0xffff);
+        fillData.add(alignment & 0xffff);
         // 剩余部分填充0值,直到长度满足对齐的需要
         while ((fillData.size() + this.data.size()) % alignment != 0) {
             fillData.add(0);
@@ -397,7 +397,7 @@ public final class ZeaData {
                 targetData.set(indexStart + 3, tmp[3]);
             }
         }
-        return ZeaData.fromRawData(targetData);
+        return ZeaData.fromRawData(targetData).unalign();
     }
     ////////////////////////////// private ////////////////////////////////
 
@@ -429,11 +429,14 @@ public final class ZeaData {
      */
     private AlignmentInfo getAlignmentInfo() {
         if (this.data.size() >= MIN_ALIGN_LENGTH) {
-            int alignment = data.get(data.size() - 3);
+            int alignmentL = data.get(data.size() - 4);
+            int alignmentH = data.get(data.size() - 3);
             int originDataLengthL = data.get(data.size() - 2);
             int originDataLengthH = data.get(data.size() - 1);
+
+            int alignment = alignmentH << 16 | alignmentL;
             int originDataLength = originDataLengthH << 16 | originDataLengthL;
-            if (alignment != 0 && data.size() % alignment == 0 && data.size() >= originDataLength + MIN_ALIGN_LENGTH) {
+            if (alignment > 0 && data.size() % alignment == 0 && data.size() >= originDataLength + MIN_ALIGN_LENGTH) {
                 return new AlignmentInfo(alignment, originDataLength);
             }
         }

@@ -29,8 +29,8 @@ class ZeaDataTest {
         Assertions.assertNotNull(data);
         Assertions.assertEquals(0, data.get(data.size() - 1));
         Assertions.assertEquals(5, data.get(data.size() - 2));
-        Assertions.assertEquals(3, data.get(data.size() - 3));
-        Assertions.assertEquals(0, data.get(data.size() - 4));
+        Assertions.assertEquals(0, data.get(data.size() - 3));
+        Assertions.assertEquals(3, data.get(data.size() - 4));
         Assertions.assertEquals(getData(zeaData), getData(zeaData.align(13).unalign()));
         Assertions.assertThrows(ParamCheckException.class, () -> getData(zeaData.align(0).unalign()));
     }
@@ -49,9 +49,12 @@ class ZeaDataTest {
         ZeaData zeaData1 = ZeaData.from(data);
         ZeaData zeaData2 = zeaData1.align(2);
         data = getData(zeaData2);
+        System.out.println(data);
         Assertions.assertEquals(0, data.get(1));
         Assertions.assertEquals(0, data.get(3));
-        Assertions.assertEquals(0, data.get(4));
+        Assertions.assertEquals(2, data.get(4));
+        Assertions.assertEquals(0, data.get(5));
+        Assertions.assertEquals(4, data.get(6));
         Assertions.assertEquals(0, data.get(7));
     }
 
@@ -189,12 +192,11 @@ class ZeaDataTest {
 
     @Test
     public void 测试加密解密功能() {
-        ZeaData plainData = ZeaData.from("原sg12#$@"), key = ZeaData.from("1234"), salt = ZeaData.from("asfd");
-        System.out.println("原文=" + plainData);
+        ZeaData plainData = ZeaData.from("原sg12#$@" + new Random().nextLong()).align(2).align(7);
+        ZeaData key = ZeaData.from("1234"), salt = ZeaData.from(new Random().nextLong());
         ZeaData encryptedData = plainData.encrypt(key, salt);
-        System.out.println("密文=" + encryptedData);
         ZeaData decryptedData = encryptedData.decrypt(key);
-        System.out.println("解密结果=" + decryptedData);
+        Assertions.assertEquals(plainData, decryptedData);
     }
     private List<Integer> getData(ZeaData zeaData) {
         try {
