@@ -187,6 +187,15 @@ class ZeaDataTest {
         Assertions.assertEquals(1, shift.invoke(null, 1, 0));
     }
 
+    @Test
+    public void 测试加密解密功能() {
+        ZeaData plainData = ZeaData.from("原sg12#$@"), key = ZeaData.from("1234"), salt = ZeaData.from("asfd");
+        System.out.println("原文=" + plainData);
+        ZeaData encryptedData = plainData.encrypt(key, salt);
+        System.out.println("密文=" + encryptedData);
+        ZeaData decryptedData = encryptedData.decrypt(key);
+        System.out.println("解密结果=" + decryptedData);
+    }
     private List<Integer> getData(ZeaData zeaData) {
         try {
             Field data = ZeaData.class.getDeclaredField("data");
