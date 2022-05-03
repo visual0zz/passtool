@@ -303,7 +303,7 @@ public final class ZeaData {
      * @return 加密后的数据
      */
     public ZeaData encrypt(ZeaData key, ZeaData salt) {
-        salt = salt == null ? ZeaData.from(1234) : salt;
+        salt = salt == null ? ZeaData.from("1234") : salt;
         List<Integer> targetData = this.align(4).data;
         int[][] hashes = new int[TURNS][];
         ZeaData hash = merge(key, salt).align(targetData.size());
@@ -351,6 +351,12 @@ public final class ZeaData {
         return encrypt(key, null);
     }
 
+    /**
+     * 解密
+     *
+     * @param key 密钥
+     * @return 加密后的数据
+     */
     public ZeaData decrypt(ZeaData key) {
         int saltLength = ZeaData.fromRawData(this.data.subList(0, 2)).transferToList(Integer.class).get(0);
         ZeaData salt = ZeaData.fromRawData(this.data.subList(2, 2 + saltLength));
