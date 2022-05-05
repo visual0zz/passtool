@@ -213,4 +213,13 @@ class ZeaDataTest {
             return null;
         }
     }
+
+    @Test
+    public void testTmp() {
+        ZeaData data = ZeaData.from("昆仑#@13abc赑箜琳亵fsd渎琅篌屃f");
+        for (int i = 0; i < 1000; i++) {
+            data = data.zeaHash(2);
+            System.out.println(data);
+        }
+    }
 }
