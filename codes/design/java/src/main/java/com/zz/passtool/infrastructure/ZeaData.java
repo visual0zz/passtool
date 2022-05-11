@@ -29,8 +29,8 @@ public final class ZeaData {
     private static final int    MIN_ALIGN_LENGTH  = 4;                                                                        // 最小填充长度
     private static final int    HASH_MULTIPLIER_A = 12347;
     private static final int    HASH_MULTIPLIER_B = 54323;
-    private static final int    HASH_MULTIPLIER_C = 17771;
-    private static final int    HASH_MULTIPLIER_D = 33343;
+    private static final int    HASH_MULTIPLIER_C = 17783;
+    private static final int    HASH_MULTIPLIER_D = 33347;
     private static final int[]  HASH_INDEX_JUMP   =
         new int[] {1, 3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 79, 131, 257, 331};
     /**
@@ -262,8 +262,8 @@ public final class ZeaData {
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
                 int sourceIndex = (targetIndex + 31) * indexJump % this.data.size();
-                targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
-                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
+                targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_C
+                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_D));
             }
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
@@ -274,7 +274,7 @@ public final class ZeaData {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
                 int sourceIndex = (targetIndex + 137) * indexJump % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
-                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
+                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_D));
             }
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
