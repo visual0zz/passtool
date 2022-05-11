@@ -102,6 +102,8 @@ function isaligned(data) {
 function zeahash(data, hashLength) {
     HASH_MULTIPLIER_A = 12347;
     HASH_MULTIPLIER_B = 54323;
+    HASH_MULTIPLIER_C = 17783;
+    HASH_MULTIPLIER_D = 33347;
     targetData = data.slice(0, hashLength);
 
     for (indexJump of HASH_INDEX_JUMP) {
@@ -120,7 +122,7 @@ function zeahash(data, hashLength) {
     for (indexJump of HASH_INDEX_JUMP) {
         for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
             sourceIndex = (targetIndex + 31) * indexJump % data.length;
-            targetData[targetIndex] = 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_A + data[sourceIndex] * HASH_MULTIPLIER_B);
+            targetData[targetIndex] = 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_C + data[sourceIndex] * HASH_MULTIPLIER_D);
         }
     }
     for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
@@ -129,7 +131,7 @@ function zeahash(data, hashLength) {
     for (indexJump of HASH_INDEX_JUMP) {
         for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
             sourceIndex = (targetIndex + 137) * indexJump % data.length;
-            targetData[targetIndex] = 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_A + data[sourceIndex] * HASH_MULTIPLIER_B);
+            targetData[targetIndex] = 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_A + data[sourceIndex] * HASH_MULTIPLIER_D);
         }
     }
     for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
@@ -278,10 +280,11 @@ function decrypt(data,key) {
     }
     return unalign(targetData);
 }
-data = string2data("昆仑#@13abc赑箜琳亵渎琅篌屃");
+data = string2data("昆仑#@13abc赑箜琳亵fsd渎琅篌屃");
 key=data;
-console.info("data=", data);
-data=encrypt(data,key);
-console.info("encrypted=",data);
-data=decrypt(data,key);
-console.info("decrypted=",data);
+console.info("hash=",zeahash(data,10));
+// console.info("data=", data);
+// data=encrypt(data,key);
+// console.info("encrypted=",data);
+// data=decrypt(data,key);
+// console.info("decrypted=",data);
