@@ -218,6 +218,7 @@ class ZeaDataTest {
     public void testTmp() {
         ZeaData data = ZeaData.from("昆仑#@13abc赑箜琳亵fsd渎琅篌屃");
         System.out.println("data=" + data);
-        System.out.println("hash=" + data.zeaHash(10));
+        System.out.println("encrypted=" + data.encrypt(data));
+        System.out.println("decrypted=" + data.encrypt(data).decrypt(data));
     }
 }

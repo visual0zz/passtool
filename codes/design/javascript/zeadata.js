@@ -282,9 +282,8 @@ function decrypt(data,key) {
 }
 data = string2data("昆仑#@13abc赑箜琳亵fsd渎琅篌屃");
 key=data;
-console.info("hash=",zeahash(data,10));
-// console.info("data=", data);
-// data=encrypt(data,key);
-// console.info("encrypted=",data);
-// data=decrypt(data,key);
-// console.info("decrypted=",data);
+console.info("data=", data);
+data=encrypt(data,key);
+console.info("encrypted=",data);
+data=decrypt(data,key);
+console.info("decrypted=",data);
