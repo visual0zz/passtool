@@ -1,4 +1,4 @@
-package com.zz.utils;
+package com.zz.passtool.utils;
 
 /**
  * @author 书台

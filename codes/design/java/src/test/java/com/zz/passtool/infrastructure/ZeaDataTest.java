@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.zz.utils.ParamCheckUtil.ParamCheckException;
+import com.zz.passtool.utils.ParamCheckUtil.ParamCheckException;
 
 /**
  * @author 书台

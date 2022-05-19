@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import com.zz.passtool.interfaces.exception.DataFormatTransferException;
 import com.zz.passtool.interfaces.tag.ReadOnly;
-import com.zz.utils.ParamCheckUtil;
+import com.zz.passtool.utils.ParamCheckUtil;
 
 /**
  * 用于加密或者求哈希的数据承载对象，内部的每个整数只使用低两字节
