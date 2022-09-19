@@ -166,16 +166,6 @@ class ZeaDataTest {
         }
     }
 
-    @Test
-    public void 测试哈希() {
-        ZeaData data = ZeaData.from("昆仑#@13abc赑箜琳亵渎琅篌屃");
-        ZeaData key = data;
-        System.out.println("data=" + data);
-        data = data.encrypt(key);
-        System.out.println("encrypted=" + data);
-        data = data.decrypt(key);
-        System.out.println("decrypted=" + data);
-    }
 
     @Test
     public void 测试位移() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -212,6 +202,17 @@ class ZeaDataTest {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Test
+    public void 测试哈希() {
+        ZeaData data = ZeaData.from("昆仑#@13abc赑箜琳亵渎琅篌屃");
+        ZeaData key = data;
+        System.out.println("data=" + data);
+        data = data.encrypt(key);
+        System.out.println("encrypted=" + data);
+        data = data.decrypt(key);
+        System.out.println("decrypted=" + data);
     }
 
     @Test
