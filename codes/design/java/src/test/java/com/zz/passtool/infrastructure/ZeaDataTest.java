@@ -190,8 +190,23 @@ class ZeaDataTest {
         ZeaData plainData = ZeaData.from("原sg12#$@" + new Random().nextLong()).align(2).align(7);
         ZeaData key = ZeaData.from("1234"), salt = ZeaData.from(new Random().nextLong());
         ZeaData encryptedData = plainData.encrypt(key, salt);
+            encryptedData.decrypt(ZeaData.from("556"));
         ZeaData decryptedData = encryptedData.decrypt(key);
         Assertions.assertEquals(plainData, decryptedData);
+    }
+
+    @Test
+    public void 测试ZeaData的只读性(){
+        ZeaData zeaData1=ZeaData.from("fasdfasdghqweg空萨芬发丝藕粉哈送地方见kljslhgilas()jdfmnhihlhljhlhll");
+        ZeaData zeaData2=ZeaData.from("fasdfasdghqweg空萨芬发丝藕粉哈送地方见kljslhgilas()jdfmnhihlhljhlhll");
+        try{
+            zeaData1.decrypt(ZeaData.from("111"));
+        }catch (Throwable ignore){
+        }
+        zeaData1.encrypt(ZeaData.from("111"));
+        zeaData1.encrypt(ZeaData.from("111"),ZeaData.from("4415"));
+        zeaData1.align(1);
+        Assertions.assertEquals(zeaData1,zeaData2);
     }
     private List<Integer> getData(ZeaData zeaData) {
         try {
@@ -204,22 +219,56 @@ class ZeaDataTest {
         }
     }
 
-    @Test
-    public void 测试哈希() {
+    @Test void testJson(){
+        ZeaData model = ZeaData.from("昆仑");
+        Assertions.assertEquals(model,ZeaData.fromJson(model.toJson()));
+        String[]jsons={"[26118,20177]"
+                ," [26118,20177]"
+                ,"[ 26118,20177]"
+                ,"[26118 ,20177]"
+                ,"[26118, 20177]"
+                ,"[26118,20177 ]"
+                ,"[26118,20177] "
+                ," [ 26118 , 20177 ] "
+                ,"  [ 26118 ,  20177  ] "
+                ," [  26118 ,  20177 ] "};
+        for(String s:jsons){
+            Assertions.assertEquals(model,ZeaData.fromJson(s),s);
+        }
+    }
+    @Test void testJsonFail(){
+        String[]jsons={"[a26118,20177]"
+                ," 26118,20177]"
+                ,"[ 26118,20177"
+                ,"[26118 20177]"
+                ,"[26118, ,20177]"
+                ,"[[26118,20177 ]"
+                ,"[{26118,20177] "
+                ," [][ 26118 , 20177 ] "
+                ,"  [; 26118 ,  20177  ] "
+                ," [[  26118 ,  20177 ] ]"};
+        for(String s:jsons){
+            ParamCheckException exception=null;
+            try{
+                ZeaData.fromJson(s);
+            }catch (ParamCheckException e){
+                exception=e;
+            }
+            Assertions.assertNotNull(exception);
+        }
+    }
+    /**
+     * 和js参照测试
+     */
+//    @Test
+    public void 跨平台对测() {
         ZeaData data = ZeaData.from("昆仑#@13abc赑箜琳亵渎琅篌屃");
-        ZeaData key = data;
+        ZeaData key = ZeaData.from("注意注意");
         System.out.println("data=" + data);
         data = data.encrypt(key);
         System.out.println("encrypted=" + data);
         data = data.decrypt(key);
         System.out.println("decrypted=" + data);
-    }
-
-    @Test
-    public void testTmp() {
-        ZeaData data = ZeaData.from("昆仑#@13abc赑箜琳亵fsd渎琅篌屃");
-        System.out.println("data=" + data);
-        System.out.println("encrypted=" + data.encrypt(data));
-        System.out.println("decrypted=" + data.encrypt(data).decrypt(data));
+        System.out.println(data.transferToString());
     }
 }

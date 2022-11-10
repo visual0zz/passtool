@@ -1,4 +1,4 @@
-package com.zz.passtool.interfaces.tag;
+package com.zz.passtool.constants.tag;
 
 /**
  * 用于标记一个类的对象是只读的,单纯标记，无实际功能

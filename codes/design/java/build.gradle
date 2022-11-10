@@ -1,9 +1,9 @@
 plugins {
     id 'java'
 }
-
-group 'com.zz.passtool'
-version '1.0-SNAPSHOT'
+//
+//group 'com.zz.passtool'
+//version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -16,4 +16,13 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jar{
+    baseName = 'passtool'
+    classifier = null
+    version = null
+    manifest {
+        attributes 'Main-Class': 'com.zz.passtool.Main'
+    }
 }

@@ -1,4 +1,4 @@
-package com.zz.passtool.interfaces.exception;
+package com.zz.passtool.constants.exception;
 
 /**
  * @author 书台

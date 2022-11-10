@@ -6,10 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.zz.passtool.interfaces.exception.DataFormatTransferException;
-import com.zz.passtool.interfaces.tag.ReadOnly;
+import com.zz.passtool.constants.exception.DataFormatTransferException;
+import com.zz.passtool.constants.tag.ReadOnly;
 import com.zz.passtool.utils.ParamCheckUtil;
 
 /**
@@ -367,7 +368,7 @@ public final class ZeaData {
     public ZeaData decrypt(ZeaData key) {
         int saltLength = ZeaData.fromRawData(this.data.subList(0, 2)).transferToList(Integer.class).get(0);
         ZeaData salt = ZeaData.fromRawData(this.data.subList(2, 2 + saltLength));
-        List<Integer> targetData = this.data.subList(2 + saltLength, this.data.size());
+        List<Integer> targetData = new ArrayList<>(this.data.subList(2 + saltLength, this.data.size()));
         int[][] hashes = new int[TURNS][];
         ZeaData hash = merge(key, salt).align(targetData.size());
         for (int turn = 0; turn < TURNS; turn++) {
@@ -467,7 +468,7 @@ public final class ZeaData {
 
     @Override
     public String toString() {
-        return "ZeaData{" + "data=" + data + '}';
+        return "ZeaData{"+data + '}';
     }
 
     @Override
@@ -486,5 +487,12 @@ public final class ZeaData {
     public int hashCode() {
         return Objects.hash(data);
     }
-
+    public String toJson(){
+        return data.stream().map(Object::toString).collect(Collectors.joining(",","[","]"));
+    }
+    public static ZeaData fromJson(String json){
+        ParamCheckUtil.assertTrue(Pattern.matches("^ *\\[(?: *[0-9]+ *,)* *[0-9]* *\\] *$",json),"json格式错误");
+        List<Integer>data=Arrays.stream(json.replaceAll("[\\[\\]]", "").split(",")).map(String::trim).map(Integer::valueOf).collect(Collectors.toList());
+        return fromRawData(data);
+    }
 }

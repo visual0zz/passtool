@@ -1,12 +1,11 @@
 /.vs
 *.iml
 *.idea
-.mvn/*
-!.mvn/wrapper/maven-wrapper.properties
 .idea
-/temptest
 .gradle
 .DS_Store
-/origin_data/*
 codes/design/java/build/*
+codes/design/java/tmp/*
+*.deleted
 *.class
+/datastorage

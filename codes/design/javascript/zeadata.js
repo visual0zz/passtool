@@ -11,7 +11,7 @@ function string2data(str) {
         throw "input must be string"
     }
     var result = [];
-    for (i = 0; i < str.length; i++) {
+    for (var i = 0; i < str.length; i++) {
         result.push(str.charCodeAt(i));
     }
     return result;
@@ -27,7 +27,7 @@ function data2string(data) {
         throw "input must be array"
     }
     var result = "";
-    for (i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
         result += String.fromCharCode(data[i]);
     }
     return result;
@@ -63,9 +63,9 @@ function unalign(data) {
         throw "input must be array"
     }
     if (isaligned(data)) {
-        raw_length_H = data[data.length - 1];
-        raw_length_L = data[data.length - 2];
-        raw_length = raw_length_H * 65536 + raw_length_L;
+        var raw_length_H = data[data.length - 1];
+        var raw_length_L = data[data.length - 2];
+        var raw_length = raw_length_H * 65536 + raw_length_L;
         return data.slice(0, raw_length);
     } else {
         return data;
@@ -81,12 +81,12 @@ function isaligned(data) {
     if (!Array.isArray(data)) {
         throw "input must be array"
     }
-    raw_length_H = data[data.length - 1];
-    raw_length_L = data[data.length - 2];
-    raw_length = raw_length_H * 65536 + raw_length_L;
-    alignment_H = data[data.length - 3];
-    alignment_L = data[data.length - 4];
-    alignment=alignment_H*65536+alignment_L;
+    var raw_length_H = data[data.length - 1];
+    var raw_length_L = data[data.length - 2];
+    var raw_length = raw_length_H * 65536 + raw_length_L;
+    var alignment_H = data[data.length - 3];
+    var alignment_L = data[data.length - 4];
+    var alignment=alignment_H*65536+alignment_L;
     if (data.length % alignment == 0 && data.length - 4 >= raw_length) {
         return true;
     } else {
@@ -100,58 +100,58 @@ function isaligned(data) {
  * @returns 哈希值
  */
 function zeahash(data, hashLength) {
-    HASH_MULTIPLIER_A = 12347;
-    HASH_MULTIPLIER_B = 54323;
-    HASH_MULTIPLIER_C = 17783;
-    HASH_MULTIPLIER_D = 33347;
-    targetData = data.slice(0, hashLength);
+    var HASH_MULTIPLIER_A = 12347;
+    var HASH_MULTIPLIER_B = 54323;
+    var HASH_MULTIPLIER_C = 17783;
+    var HASH_MULTIPLIER_D = 33347;
+    var targetData = data.slice(0, hashLength);
 
-    for (indexJump of HASH_INDEX_JUMP) {
+    for (var indexJump of HASH_INDEX_JUMP) {
         for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
-            sourceIndex = (targetIndex + indexJump) % data.length;
+            var sourceIndex = (targetIndex + indexJump) % data.length;
             targetData[targetIndex] = (targetData[targetIndex] * HASH_MULTIPLIER_A + data[sourceIndex] * HASH_MULTIPLIER_B) & 0xffff;
         }
     }
-    for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
+    for (var targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
         targetData[targetIndex] = 0xffff & (targetData[targetIndex] ^ targetData[(targetIndex + 17) % targetData.length]);
     }
-    for (sourceIndex = 0; sourceIndex < data.length; sourceIndex++) {
-        targetIndex = sourceIndex % targetData.length;
+    for (var sourceIndex = 0; sourceIndex < data.length; sourceIndex++) {
+        var targetIndex = sourceIndex % targetData.length;
         targetData[targetIndex] = targetData[targetIndex] ^ data[sourceIndex];
     }
-    for (indexJump of HASH_INDEX_JUMP) {
+    for (var indexJump of HASH_INDEX_JUMP) {
         for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
-            sourceIndex = (targetIndex + 31) * indexJump % data.length;
+            var sourceIndex = (targetIndex + 31) * indexJump % data.length;
             targetData[targetIndex] = 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_C + data[sourceIndex] * HASH_MULTIPLIER_D);
         }
     }
-    for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
+    for (var targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
         targetData[targetIndex] = 0xffff & (targetData[targetIndex] ^ targetData[(targetIndex + 3) % targetData.length]);
     }
-    for (indexJump of HASH_INDEX_JUMP) {
+    for (var indexJump of HASH_INDEX_JUMP) {
         for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
-            sourceIndex = (targetIndex + 137) * indexJump % data.length;
+            var sourceIndex = (targetIndex + 137) * indexJump % data.length;
             targetData[targetIndex] = 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_A + data[sourceIndex] * HASH_MULTIPLIER_D);
         }
     }
-    for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
+    for (var targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
         targetData[targetIndex]=
             targetData[targetIndex] ^ targetData[targetData[(targetIndex+1)%targetData.length] % targetData.length];
     }
-    for(sourceIndex=0;sourceIndex<data.length;sourceIndex++){
-        targetIndex=(sourceIndex*113+71)% targetData.length;
+    for(var sourceIndex=0;sourceIndex<data.length;sourceIndex++){
+        var targetIndex=(sourceIndex*113+71)% targetData.length;
         targetData[targetIndex]=targetData[targetIndex]^data[sourceIndex];
         targetIndex=(sourceIndex+1)%targetData.length;
         targetData[targetIndex]=targetData[targetIndex]^data[sourceIndex];
     }
-    for (indexJump of HASH_INDEX_JUMP) {
-        for (targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
-            sourceIndex = (targetIndex + 1 + indexJump) % targetData.length;
+    for (var indexJump of HASH_INDEX_JUMP) {
+        for (var targetIndex = 0; targetIndex < targetData.length; targetIndex++) {
+            var sourceIndex = (targetIndex + 1 + indexJump) % targetData.length;
             targetData[targetIndex]= 0xffff & (targetData[targetIndex] * HASH_MULTIPLIER_A + targetData[sourceIndex] * HASH_MULTIPLIER_B);
         }
     }
-    for(sourceIndex=0;sourceIndex<data.length;sourceIndex++){
-        targetIndex=(sourceIndex+1)%targetData.length;
+    for(var sourceIndex=0;sourceIndex<data.length;sourceIndex++){
+        var targetIndex=(sourceIndex+1)%targetData.length;
         targetData[targetIndex]=targetData[targetIndex]^data[sourceIndex];
     }
     return targetData;
@@ -185,15 +185,15 @@ function encrypt(data,key,salt) {
     var targetData = align(data,4);
     var hashes = [];
     var hash = align(key.concat(salt),targetData.length);
-    for (turn = 0; turn < TURNS; turn++) {
+    for (var turn = 0; turn < TURNS; turn++) {
         hash =zeahash(hash.concat(key,salt),targetData.length);
         hashes[turn] = hash;
         // 构造轮密钥
     }
-    for (turn = 0; turn < TURNS; turn++) {
-        for (indexStart = 0; indexStart < targetData.length; indexStart += 4) {
+    for (var turn = 0; turn < TURNS; turn++) {
+        for (var indexStart = 0; indexStart < targetData.length; indexStart += 4) {
             // 四个一组，组内互相异或
-            tmp=[];
+            var tmp=[];
             tmp[0] =targetData[indexStart]^targetData[indexStart+3]^targetData[indexStart+1];
             tmp[1] =targetData[indexStart+1]^targetData[indexStart]^targetData[indexStart+2];
             tmp[2] =targetData[indexStart+2]^targetData[indexStart+1]^targetData[indexStart+3];
@@ -204,24 +204,24 @@ function encrypt(data,key,salt) {
             targetData[indexStart+3]=tmp[3];
         }
 
-        for (index = 0; index < targetData.length; index++) {
+        for (var index = 0; index < targetData.length; index++) {
             targetData[index]=shift(targetData[index],index);
             // 全体数据进行比特循环移位
         }
-        start = turn % targetData.length, indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length]%targetData.length + 2;
-        index=start, temp = targetData[start];
+        var start = turn % targetData.length, indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length]%targetData.length + 2;
+        var index=start, temp = targetData[start];
         for (index = start; index + indexJump < targetData.length; index += indexJump) {
             // 进行错位
             targetData[index]=targetData[index+indexJump]
         }
         targetData[index]=temp;
 
-        for (i = 0; i < targetData.length; i++) {
+        for (var i = 0; i < targetData.length; i++) {
             targetData[i]=targetData[i]^hashes[turn][i]
             // 全体数据和轮密钥异或
         }
     }
-    head=[];
+    var head=[];
     head[0]=salt.length&0xffff;
     head[1]=(salt.length>>16)&0xffff;
     return head.concat(salt,targetData);
@@ -235,17 +235,17 @@ function encrypt(data,key,salt) {
  */
 function decrypt(data,key) {
     var TURNS=32;
-    saltLength = data[0]&0xffff|((0xffff&data[1])<<16);
-    salt=data.slice(2,2+saltLength);
+    var saltLength = data[0]&0xffff|((0xffff&data[1])<<16);
+    var salt=data.slice(2,2+saltLength);
     var targetData = data.slice(2 + saltLength, data.length);
     var hashes = [];
     var hash = align(key.concat(salt),targetData.length);
-    for (turn = 0; turn < TURNS; turn++) {
+    for (var turn = 0; turn < TURNS; turn++) {
         hash =zeahash(hash.concat(key,salt),targetData.length);
         hashes[turn] = hash;
         // 构造轮密钥
     }
-    for (turn = TURNS - 1; turn >= 0; turn--) {
+    for (var turn = TURNS - 1; turn >= 0; turn--) {
         for (var i = 0; i < targetData.length; i++) {
             targetData[i]=targetData[i]^hashes[turn][i];
             // 全体数据和轮密钥异或
@@ -280,10 +280,26 @@ function decrypt(data,key) {
     }
     return unalign(targetData);
 }
-data = string2data("昆仑#@13abc赑箜琳亵fsd渎琅篌屃");
-key=data;
-console.info("data=", data);
-data=encrypt(data,key);
-console.info("encrypted=",data);
-data=decrypt(data,key);
-console.info("decrypted=",data);
+/**
+ * 测试用，用于和java代码核对两者行为是否一致
+ */
+function testEncrypt(){
+    var data = string2data("昆仑#@13abc赑箜琳亵渎琅篌屃");
+    var key = string2data("注意注意");
+    console.info("data=", data);
+    var encrypted=encrypt(data,key);
+    console.info("encrypted=",encrypted);
+    var decrypted=decrypt(encrypted,key);
+    console.info("decrypted=",decrypted);
+    console.info("decrypted string=",data2string(decrypted));
+}
+
+function testFileRead(){
+    var data = string2data("昆仑#@13abc赑箜琳亵渎琅篌屃");
+    var key = string2data("注意注意");
+    var encrypted=encrypt(data,key);
+    console.info("encrypted=",encrypted);
+    console.info("encrypted string=",JSON.stringify(encrypted));
+    console.info("wrong decrypted=",decrypt(encrypted,string2data("1234")));
+}
+export {string2data,data2string,zeahash,encrypt,decrypt}
