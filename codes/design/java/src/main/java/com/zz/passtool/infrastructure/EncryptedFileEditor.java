@@ -3,6 +3,7 @@ package com.zz.passtool.infrastructure;
 import com.zz.passtool.utils.ParamCheckUtil;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 
@@ -28,7 +29,7 @@ public class EncryptedFileEditor {
         ParamCheckUtil.assertTrue(passwords.size()>0,"必须有至少一个密码才能进行加解密");
         List<String>result= new ArrayList<>();
         try (FileInputStream fileInputStream=new FileInputStream(file)){
-            Scanner in=new Scanner(fileInputStream);
+            Scanner in=new Scanner(fileInputStream, StandardCharsets.UTF_8);
             ZeaData encrypted=ZeaData.fromJson(in.nextLine());
             Optional<String[]> data=passwords.stream()
                     .map(ZeaData::from)
@@ -67,7 +68,7 @@ public class EncryptedFileEditor {
         ZeaData salt=ZeaData.from(passwords.size()+ Instant.now().toString()+passwords.hashCode()).zeaHash(20);
         ZeaData encrypted=data.encrypt(ZeaData.from(passwords.get(passwords.size()-1)),salt);
         try (FileOutputStream fileOutputStream=new FileOutputStream(file)){
-            PrintStream p=new PrintStream(fileOutputStream);
+            PrintStream p=new PrintStream(fileOutputStream,false, StandardCharsets.UTF_8);
             p.print(encrypted.toJson());
             p.close();
         } catch (FileNotFoundException e) {

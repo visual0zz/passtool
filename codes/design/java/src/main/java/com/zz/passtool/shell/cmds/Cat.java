@@ -42,7 +42,7 @@ public class Cat extends Command {
      * @param row 原文件的行
      * @return 替换后的字符串
      */
-    public static String replacePassword(File file,String row){
+    private static String replacePassword(File file,String row){
         if(Main.seed==null||!row.matches("^.*"+PASSWORD_FORMATTER_FORMAT+".*$")){
             return row;
         }
@@ -56,6 +56,7 @@ public class Cat extends Command {
         return result;
     }
     private static String buildPassword(String systemSeed,String filePath,String formatter){
+//        System.out.println(systemSeed+"#"+filePath+"#"+formatter);
         ZeaData data=ZeaData.from(systemSeed+"#"+filePath+"#"+formatter);
         data=data.encrypt(data.align(20).zeaHash(20));
         data=data.zeaHash(formatter.length());
