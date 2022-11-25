@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-    public static File DATA_FOLDER;
+    public static final File DATA_FOLDER;
+    public static String seed=null;
     static{
         String url=Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         File buildFolder;

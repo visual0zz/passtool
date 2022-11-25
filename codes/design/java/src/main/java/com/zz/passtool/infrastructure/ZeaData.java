@@ -1,11 +1,6 @@
 package com.zz.passtool.infrastructure;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -15,7 +10,7 @@ import com.zz.passtool.utils.ParamCheckUtil;
 
 /**
  * 用于加密或者求哈希的数据承载对象，内部的每个整数只使用低两字节
- * 
+ *
  * @author 书台
  * @since 2022/4/6 8:28 下午
  */
@@ -26,14 +21,19 @@ public final class ZeaData {
      * 在执行对齐填充时的最小填充长度,填充的格式为[原始数据,0...,对齐模，原始长度值低位，原始长度值高位],其中原始长度为整数
      */
 
-    private static final int    TURNS             = 32;                                                                       // 加密一共进行几轮
-    private static final int    MIN_ALIGN_LENGTH  = 4;                                                                        // 最小填充长度
-    private static final int    HASH_MULTIPLIER_A = 12347;
-    private static final int    HASH_MULTIPLIER_B = 54323;
-    private static final int    HASH_MULTIPLIER_C = 17783;
-    private static final int    HASH_MULTIPLIER_D = 33347;
-    private static final int[]  HASH_INDEX_JUMP   =
-        new int[] {1, 3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 79, 131, 257, 331};
+    private static final int TURNS = 32;                                                                       // 加密一共进行几轮
+    private static final int MIN_ALIGN_LENGTH = 4;                                                                        // 最小填充长度
+    private static final int HASH_MULTIPLIER_A = 12347;
+    private static final int HASH_MULTIPLIER_B = 54323;
+    private static final int HASH_MULTIPLIER_C = 17783;
+    private static final int HASH_MULTIPLIER_D = 33347;
+    private static final int[] HASH_INDEX_JUMP =
+            new int[]{1, 3, 5, 7, 11, 13, 19, 23, 29, 31, 37, 67, 79, 131, 257, 331};
+    private static final String SPECIAL_CHARS = "~`!@#$%^&*()-_=+[]{}\\|'\";:?/<>.,";//特殊字符列表
+    private static final String EASY_CHARS = "0123456789ADEFGdefHhLNnQRTrtYy~!@#%^&*()+=[]{}\\<>?/";//易辨识字符列表
+    private static final String NUMBER_CHARS = "0123456789";//数字字符
+    private static final String LOWER_CHARS = "abcdefghijklmnopqrstuvwxyz";//小写字母
+    private static final String UPPER_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";//大写字母列表
     /**
      * 数据
      */
@@ -43,7 +43,7 @@ public final class ZeaData {
 
     /**
      * 数据是否是经过对齐的
-     * 
+     *
      * @return true-对齐 false-未对齐
      */
     public boolean isAligned() {
@@ -52,7 +52,7 @@ public final class ZeaData {
 
     /**
      * 将数据对齐于某个模，如果已经对齐过则返回原文
-     * 
+     *
      * @param alignment 要对齐的模
      * @return 对齐之后的数据
      */
@@ -93,23 +93,23 @@ public final class ZeaData {
 
     /**
      * 将多个数据合并
-     * 
+     *
      * @param zeaDatas 多个数据
      * @return 合并的结果，合并就是单纯的把数据头尾连接起来
      */
     public static ZeaData merge(ZeaData... zeaDatas) {
         List<Integer> data = Arrays.stream(zeaDatas)
-            .filter(Objects::nonNull)
-            .map(e -> e.data)
-            .filter(Objects::nonNull)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .map(e -> e.data)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         return new ZeaData(data);
     }
 
     /**
      * 将其他数据类型转换为ZeaData类型， 支持数字集合 或者 字符串的集合
-     * 
+     *
      * @param obj 其他数据类型
      * @return 转化后的ZeaData数据
      * @throws DataFormatTransferException 输入的数据类型不支持转化
@@ -117,37 +117,37 @@ public final class ZeaData {
     public static ZeaData from(Object obj) {
         ParamCheckUtil.assertTrue(obj != null, new NullPointerException("no data"));
         if (obj instanceof String) {
-            return fromString((String)obj);
+            return fromString((String) obj);
         } else if (obj instanceof Collection) {
-            return merge(from(((Collection<?>)obj).toArray()));
+            return merge(from(((Collection<?>) obj).toArray()));
         } else if (obj.getClass().isArray()) {
-            Object[] array = (Object[])obj;
+            Object[] array = (Object[]) obj;
             return merge(Arrays.stream(array).map(ZeaData::from).toArray(ZeaData[]::new));
         } else if (obj instanceof Byte) {
             List<Integer> data = new ArrayList<>();
-            data.add(((int)(byte)obj) & 0xff);
+            data.add(((int) (byte) obj) & 0xff);
             return new ZeaData(data);
         } else if (obj instanceof Character) {
             List<Integer> data = new ArrayList<>();
-            data.add(((int)(char)obj) & 0xffff);
+            data.add(((int) (char) obj) & 0xffff);
             return new ZeaData(data);
         } else if (obj instanceof Short) {
             List<Integer> data = new ArrayList<>();
-            data.add(((int)(short)obj) & 0xffff);
+            data.add(((int) (short) obj) & 0xffff);
             return new ZeaData(data);
         } else if (obj instanceof Integer) {
-            int originData = (int)obj;
+            int originData = (int) obj;
             List<Integer> data = new ArrayList<>();
             data.add(originData & 0xffff);
             data.add((originData >> 16) & 0xffff);
             return new ZeaData(data);
         } else if (obj instanceof Long) {
-            long originData = (long)obj;
+            long originData = (long) obj;
             List<Integer> data = new ArrayList<>();
-            data.add((int)(originData & 0xffff));
-            data.add((int)((originData >> 16) & 0xffff));
-            data.add((int)((originData >> 32) & 0xffff));
-            data.add((int)((originData >> 48) & 0xffff));
+            data.add((int) (originData & 0xffff));
+            data.add((int) ((originData >> 16) & 0xffff));
+            data.add((int) ((originData >> 32) & 0xffff));
+            data.add((int) ((originData >> 48) & 0xffff));
             return new ZeaData(data);
         }
         throw new DataFormatTransferException("cant create ZeaData from:" + obj.getClass().getCanonicalName());
@@ -155,14 +155,14 @@ public final class ZeaData {
 
     /**
      * 将ZeaData转换为字符串
-     * 
+     *
      * @return 字符串
      */
     public String transferToString() {
         int[] sourceData = this.data.stream().mapToInt(Integer::valueOf).toArray();
         StringBuilder result = new StringBuilder();
         for (int c : sourceData) {
-            result.append((char)c);
+            result.append((char) c);
         }
         return result.toString();
     }
@@ -179,17 +179,17 @@ public final class ZeaData {
         if (clazz == Byte.class) {
             result = new ArrayList<Byte>();
             for (int s : sourceData) {
-                result.add((byte)s);
+                result.add((byte) s);
             }
         } else if (clazz == Character.class) {
             result = new ArrayList<Character>();
             for (int s : sourceData) {
-                result.add((char)s);
+                result.add((char) s);
             }
         } else if (clazz == Short.class) {
             result = new ArrayList<Short>();
             for (int s : sourceData) {
-                result.add((short)s);
+                result.add((short) s);
             }
         } else if (clazz == Integer.class) {
             result = new ArrayList<Integer>();
@@ -216,7 +216,7 @@ public final class ZeaData {
 
     /**
      * 由内部表示直接构造ZeaData
-     * 
+     *
      * @param rawData 数据的内部表示
      * @return ZeaData对象
      */
@@ -226,7 +226,7 @@ public final class ZeaData {
 
     /**
      * 获得内部的数据表示
-     * 
+     *
      * @return 内部数据的复制
      */
     public List<Integer> getRawData() {
@@ -237,10 +237,9 @@ public final class ZeaData {
 
     /**
      * 计算哈希
-     * 
+     *
      * @param hashLength 目标哈希的长度
      * @return 目标哈希数据
-     * 
      */
     public ZeaData zeaHash(int hashLength) {
         ParamCheckUtil.assertTrue(hashLength <= this.data.size(), "hashLength is too long.");
@@ -249,12 +248,12 @@ public final class ZeaData {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
                 int sourceIndex = (targetIndex + indexJump) % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
-                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
+                        + this.data.get(sourceIndex) * HASH_MULTIPLIER_B));
             }
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex,
-                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 17) % targetData.size())));
+                    0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 17) % targetData.size())));
         }
         for (int sourceIndex = 0; sourceIndex < this.data.size(); sourceIndex++) {
             int targetIndex = sourceIndex % targetData.size();
@@ -264,23 +263,23 @@ public final class ZeaData {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
                 int sourceIndex = (targetIndex + 31) * indexJump % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_C
-                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_D));
+                        + this.data.get(sourceIndex) * HASH_MULTIPLIER_D));
             }
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex,
-                0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 3) % targetData.size())));
+                    0xffff & (targetData.get(targetIndex) ^ targetData.get((targetIndex + 3) % targetData.size())));
         }
         for (int indexJump : HASH_INDEX_JUMP) {
             for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
                 int sourceIndex = (targetIndex + 137) * indexJump % this.data.size();
                 targetData.set(targetIndex, 0xffff & (targetData.get(targetIndex) * HASH_MULTIPLIER_A
-                    + this.data.get(sourceIndex) * HASH_MULTIPLIER_D));
+                        + this.data.get(sourceIndex) * HASH_MULTIPLIER_D));
             }
         }
         for (int targetIndex = 0; targetIndex < targetData.size(); targetIndex++) {
             targetData.set(targetIndex, targetData.get(targetIndex)
-                ^ targetData.get(targetData.get((targetIndex + 1) % targetData.size()) % targetData.size()));
+                    ^ targetData.get(targetData.get((targetIndex + 1) % targetData.size()) % targetData.size()));
         }
         for (int sourceIndex = 0; sourceIndex < this.data.size(); sourceIndex++) {
             int targetIndex = (sourceIndex * 113 + 71) % targetData.size();
@@ -292,7 +291,7 @@ public final class ZeaData {
             for (int targetIndex1 = 0; targetIndex1 < targetData.size(); targetIndex1++) {
                 int targetIndex2 = (targetIndex1 + 1 + indexJump) % targetData.size();
                 targetData.set(targetIndex1, 0xffff & (targetData.get(targetIndex1) * HASH_MULTIPLIER_A
-                    + targetData.get(targetIndex2) * HASH_MULTIPLIER_B));
+                        + targetData.get(targetIndex2) * HASH_MULTIPLIER_B));
             }
         }
         for (int sourceIndex = 0; sourceIndex < this.data.size(); sourceIndex++) {
@@ -304,8 +303,8 @@ public final class ZeaData {
 
     /**
      * 加密
-     * 
-     * @param key 密钥
+     *
+     * @param key  密钥
      * @param salt 盐 可为空
      * @return 加密后的数据
      */
@@ -326,7 +325,7 @@ public final class ZeaData {
                 tmp[0] = targetData.get(indexStart) ^ targetData.get(indexStart + 3) ^ targetData.get(indexStart + 1);
                 tmp[1] = targetData.get(indexStart + 1) ^ targetData.get(indexStart) ^ targetData.get(indexStart + 2);
                 tmp[2] =
-                    targetData.get(indexStart + 2) ^ targetData.get(indexStart + 1) ^ targetData.get(indexStart + 3);
+                        targetData.get(indexStart + 2) ^ targetData.get(indexStart + 1) ^ targetData.get(indexStart + 3);
                 tmp[3] = targetData.get(indexStart + 3) ^ targetData.get(indexStart + 2) ^ targetData.get(indexStart);
                 targetData.set(indexStart, tmp[0]);
                 targetData.set(indexStart + 1, tmp[1]);
@@ -339,7 +338,7 @@ public final class ZeaData {
                 // 全体数据进行比特循环移位
             }
             int start = turn % targetData.size(),
-                indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] % targetData.size() + 2;
+                    indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] % targetData.size() + 2;
             int index, temp = targetData.get(start);
             for (index = start; index + indexJump < targetData.size(); index += indexJump) {
                 // 进行错位
@@ -383,7 +382,7 @@ public final class ZeaData {
             }
 
             int start = turn % targetData.size(),
-                indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] % targetData.size() + 2;
+                    indexJump = HASH_INDEX_JUMP[turn % HASH_INDEX_JUMP.length] % targetData.size() + 2;
             for (int index = start; index + indexJump < targetData.size(); index += indexJump) {
                 // 进行错位
                 int tmp = targetData.get(index + indexJump);
@@ -402,7 +401,7 @@ public final class ZeaData {
                 tmp[0] = targetData.get(indexStart) ^ targetData.get(indexStart + 3) ^ targetData.get(indexStart + 1);
                 tmp[1] = targetData.get(indexStart + 1) ^ targetData.get(indexStart) ^ targetData.get(indexStart + 2);
                 tmp[2] =
-                    targetData.get(indexStart + 2) ^ targetData.get(indexStart + 1) ^ targetData.get(indexStart + 3);
+                        targetData.get(indexStart + 2) ^ targetData.get(indexStart + 1) ^ targetData.get(indexStart + 3);
                 tmp[3] = targetData.get(indexStart + 3) ^ targetData.get(indexStart + 2) ^ targetData.get(indexStart);
                 targetData.set(indexStart, tmp[0]);
                 targetData.set(indexStart + 1, tmp[1]);
@@ -426,7 +425,7 @@ public final class ZeaData {
     private static ZeaData fromString(String string) {
         List<Integer> data = new ArrayList<>();
         for (char c : string.toCharArray()) {
-            data.add((int)c);
+            data.add((int) c);
         }
         return new ZeaData(data);
     }
@@ -437,7 +436,7 @@ public final class ZeaData {
 
     /**
      * 获得对齐信息，包含 对齐模 和 原始数据长度
-     * 
+     *
      * @return 对齐信息 null表示数据不是经过对齐的
      */
     private AlignmentInfo getAlignmentInfo() {
@@ -468,7 +467,7 @@ public final class ZeaData {
 
     @Override
     public String toString() {
-        return "ZeaData{"+data + '}';
+        return "ZeaData{" + data + '}';
     }
 
     @Override
@@ -479,7 +478,7 @@ public final class ZeaData {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ZeaData zeaData = (ZeaData)o;
+        ZeaData zeaData = (ZeaData) o;
         return data.equals(zeaData.data);
     }
 
@@ -487,12 +486,51 @@ public final class ZeaData {
     public int hashCode() {
         return Objects.hash(data);
     }
-    public String toJson(){
-        return data.stream().map(Object::toString).collect(Collectors.joining(",","[","]"));
+
+    public String toJson() {
+        return data.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]"));
     }
-    public static ZeaData fromJson(String json){
-        ParamCheckUtil.assertTrue(Pattern.matches("^ *\\[(?: *[0-9]+ *,)* *[0-9]* *\\] *$",json),"json格式错误");
-        List<Integer>data=Arrays.stream(json.replaceAll("[\\[\\]]", "").split(",")).map(String::trim).map(Integer::valueOf).collect(Collectors.toList());
+
+    public static ZeaData fromJson(String json) {
+        ParamCheckUtil.assertTrue(Pattern.matches("^ *\\[(?: *[0-9]+ *,)* *[0-9]* *\\] *$", json), "json格式错误");
+        List<Integer> data = Arrays.stream(json.replaceAll("[\\[\\]]", "").split(",")).map(String::trim).map(Integer::valueOf).collect(Collectors.toList());
         return fromRawData(data);
+    }
+
+    /**
+     * 使用ZeaData的内部数据按照指定格式装配一个密码出来
+     *
+     * @param format 密码格式描述 0-9表示数字 a-z表示小写字母 A-Z表示大写字母 #表示特殊字符 @表示特殊字符或者大小写字母
+     *               %表示特殊字符或者数字 *表示数字或者大小写字母或者特殊字符 !表示易辨识符号 $表示数字或者大小写字母
+     *               除此之外的其他字符会被忽略
+     *               例如 "0567b" 表示四位数字后面跟一个小写字母
+     * @return 密码
+     */
+    public String generatePassword(String format) {
+        ZeaData source = this;
+        if (source.data.size() < format.length()) {
+            source = source.align(format.length());
+        }
+        format = format.replaceAll("[0-9]", "0");
+        format = format.replaceAll("[a-z]", "a");
+        format = format.replaceAll("[A-Z]", "A");
+        StringBuilder builder = new StringBuilder();
+        HashMap<Character,String> charsMap=new HashMap<>();
+        charsMap.put('0',NUMBER_CHARS);
+        charsMap.put('a',LOWER_CHARS);
+        charsMap.put('A',UPPER_CHARS);
+        charsMap.put('#',SPECIAL_CHARS);
+        charsMap.put('!',EASY_CHARS);
+        charsMap.put('@',SPECIAL_CHARS+LOWER_CHARS+UPPER_CHARS);
+        charsMap.put('%',SPECIAL_CHARS+NUMBER_CHARS);
+        charsMap.put('*',SPECIAL_CHARS+LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS);
+        charsMap.put('$',LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS);
+        for (int i = 0; i < format.length(); i++) {
+            String chars=charsMap.get(format.charAt(i));
+            if(chars!=null) {
+                builder.append(chars.charAt(source.data.get(i) % chars.length()));
+            }
+        }
+        return builder.toString();
     }
 }

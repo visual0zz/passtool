@@ -38,9 +38,9 @@ public class EncryptedFileEditor {
                     .reduce((data1, data2)->{
                 String tail1=data1[data1.length-1];
                 String tail2=data2[data2.length-1];
-                int zeroLength1=tail1.length()-tail1.replaceAll("0","").length();
-                int zeroLength2=tail2.length()-tail2.replaceAll("0","").length();
-                return zeroLength1>zeroLength2?data1:data2;
+                int zeroLength1=tail1.replaceAll("0","").length();
+                int zeroLength2=tail2.replaceAll("0","").length();
+                return zeroLength1<zeroLength2?data1:data2;
             });
             if(data.isPresent()){
                 for(int i=0;i<data.get().length;i++){

@@ -1,7 +1,6 @@
 package com.zz.passtool.service;
 
 import com.zz.passtool.infrastructure.EncryptedFileEditor;
-import com.zz.passtool.infrastructure.filesystem.Bash;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +53,8 @@ public final class FileCacheService {
         for(String key:writeCache.keySet()){
             SOURCE.write(new File(key),writeCache.get(key));
             readCache.put(key,writeCache.get(key));
-            writeCache.remove(key);
         }
+        writeCache=new HashMap<>();
     }
     public static void deleteFile(File file){
         String key=getFullPath(file);
