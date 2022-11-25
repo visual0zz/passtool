@@ -31,21 +31,21 @@ public final class FileCacheService {
     public static void add(File file,String newRow){
         String key=getFullPath(file);
         if(!writeCache.containsKey(key)){
-            writeCache.put(key,read(file));
+            writeCache.put(key,new ArrayList<>(read(file)));
         }
         writeCache.get(key).add(newRow);
     }
     public static void remove(File file,int rowNum){
         String key=getFullPath(file);
         if(!writeCache.containsKey(key)){
-            writeCache.put(key,read(file));
+            writeCache.put(key,new ArrayList<>(read(file)));
         }
         writeCache.get(key).remove(rowNum);
     }
     public static void edit(File file,int rowNum,String rowContent){
         String key=getFullPath(file);
         if(!writeCache.containsKey(key)){
-            writeCache.put(key,read(file));
+            writeCache.put(key,new ArrayList<>(read(file)));
         }
         writeCache.get(key).set(rowNum,rowContent);
     }
@@ -67,6 +67,20 @@ public final class FileCacheService {
         }else {
             System.out.println("删除失败");
         }
+    }
+    public static List<List<String>> diff(File file){
+        String key=getFullPath(file);
+        if(readCache.containsKey(key) && writeCache.containsKey(key)){
+            List<List<String>> result=new ArrayList<>();
+            result.add(readCache.get(key));
+            result.add(writeCache.get(key));
+            return result;
+        }else {
+            return null;
+        }
+    }
+    public static List<String> status(){
+        return new ArrayList<>(writeCache.keySet());
     }
     private static String getFullPath(File file){
         try {
