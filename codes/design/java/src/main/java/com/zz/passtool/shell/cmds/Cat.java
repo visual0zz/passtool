@@ -21,7 +21,7 @@ public class Cat extends Command {
         format.setMinimumIntegerDigits(data.size()<5?1:((int) Math.log10(data.size()-1)+1));
         format.setGroupingUsed(false);
         for(int i=0;i<data.size();i++){
-            System.out.println(ShellColor.green+ShellColor.hightlight +format.format(i)+"|"+data.get(i)+ShellColor.clear);
+            System.out.println(ShellColor.green+ShellColor.hightlight +format.format(i)+"|"+ShellColor.clear+data.get(i));
         }
         return null;
     }

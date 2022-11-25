@@ -28,7 +28,10 @@ public class Main {
             while(true){
                 System.out.print(Bash.relatedPath(FolderService.currentFolder,DATA_FOLDER)+">");
                 try {
-                    String[]commandString=in.nextLine().split(" +");
+                    String[]commandString=in.nextLine().trim().split(" +");
+                    if(commandString.length==0){
+                        continue;
+                    }
                     if(Arrays.stream(commandString).allMatch(s->s.matches("^.*[!@#$%^&*~()<>,./?'\";:\\[\\]{}+=`].*$"))){
                         System.out.println("输入字符串存在非法字符");
                     }else{

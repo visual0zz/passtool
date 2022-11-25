@@ -19,6 +19,13 @@ public class Diff extends Command {
         List<List<String>> diff= FileCacheService.diff(new File(FolderService.currentFolder,args[0]+".json"));
         if(diff==null){
             System.out.println(ShellColor.green +"文件无修改:"+args[0]+ShellColor.clear);
+            List<String> data=FileCacheService.read(new File(FolderService.currentFolder,args[0]+".json"));
+            NumberFormat format=NumberFormat.getNumberInstance();
+            format.setMinimumIntegerDigits(data.size()<5?1:((int) Math.log10(data.size()-1)+1));
+            format.setGroupingUsed(false);
+            for(int i=0;i<data.size();i++){
+                System.out.println(ShellColor.green+ShellColor.hightlight +format.format(i)+"|"+ShellColor.clear+data.get(i));
+            }
         }else {
             System.out.println(ShellColor.green+ShellColor.hightlight +"原文件内容为:"+ShellColor.clear);
             List<String> data=diff.get(0);
