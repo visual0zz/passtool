@@ -280,6 +280,9 @@ function decrypt(data,key) {
     }
     return unalign(targetData);
 }
+function generatePassword(systemSeed,filePath,formatter){
+    
+}
 /**
  * 测试用，用于和java代码核对两者行为是否一致
  */
