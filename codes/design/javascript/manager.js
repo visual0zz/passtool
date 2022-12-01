@@ -1,13 +1,16 @@
 import * as zeadata from "./zeadata.js"
+import * as tool from "./tool.js"
 
-function testEncrypt(){
-    var data = zeadata.string2data("昆仑#@13abc赑箜琳亵渎琅篌屃");
-    var key = zeadata.string2data("注意注意");
-    console.info("data=", data);
-    var encrypted=zeadata.encrypt(data,key);
-    console.info("encrypted=",encrypted);
-    var decrypted=zeadata.decrypt(encrypted,key);
-    console.info("decrypted=",decrypted);
-    console.info("decrypted string=",zeadata.data2string(decrypted));
+
+function readIndex(access){
+    tool.accessIndexList(access);
 }
-testEncrypt();
+function readItem(path,keys,seed,access){
+    tool.accessEncryptedDataFile(path,keys,function(data){
+        //在解密出来的明文中将密码格式符号替换为生成的密码
+    });
+}
+
+readItem("t","1","jsp",function(d){
+    console.log("data=",d);
+})

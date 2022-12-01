@@ -212,12 +212,12 @@ function encrypt(data,key,salt) {
         var index=start, temp = targetData[start];
         for (index = start; index + indexJump < targetData.length; index += indexJump) {
             // 进行错位
-            targetData[index]=targetData[index+indexJump]
+            targetData[index]=targetData[index+indexJump];
         }
         targetData[index]=temp;
 
         for (var i = 0; i < targetData.length; i++) {
-            targetData[i]=targetData[i]^hashes[turn][i]
+            targetData[i]=targetData[i]^hashes[turn][i];
             // 全体数据和轮密钥异或
         }
     }
@@ -280,13 +280,44 @@ function decrypt(data,key) {
     }
     return unalign(targetData);
 }
+
+const SPECIAL_CHARS = "~`!@#$%^&*()-_=+[]{}\\|'\";:?/<>.,";//特殊字符列表
+const EASY_CHARS = "0123456789ADEFGdefHhLNnQRTrtYy~!@#%^&*()+=[]{}\\<>?/";//易辨识字符列表
+const NUMBER_CHARS = "0123456789";//数字字符
+const LOWER_CHARS = "abcdefghijklmnopqrstuvwxyz";//小写字母
+const UPPER_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";//大写字母列表
 function generatePassword(systemSeed,filePath,formatter){
-    
+    var data=string2data(systemSeed+"#"+filePath+"#"+formatter);
+    data=encrypt(data,zeahash(align(data,20),20));
+    data=zeahash(data,formatter.length);
+    formatter=formatter.replace(/[0-9]/g, "0");
+    formatter=formatter.replace(/[a-z]/g, "a");
+    formatter=formatter.replace(/[A-Z]/g, "A");
+    console.info(formatter);
+    var charsetmap={
+        '0':NUMBER_CHARS,
+        'a':LOWER_CHARS,
+        'A':UPPER_CHARS,
+        '#':SPECIAL_CHARS,
+        '!':EASY_CHARS,
+        '@':SPECIAL_CHARS+LOWER_CHARS+UPPER_CHARS,
+        '%':SPECIAL_CHARS+NUMBER_CHARS,
+        '*':SPECIAL_CHARS+LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS,
+        '$':LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS,
+    };
+    var result="";
+    for(var i=0;i<formatter.length;i++){
+        var charset=charsetmap[formatter[i]];
+        if(charset != null){
+            result+=charset[data[i]%charset.length];
+        }
+    }
+    return result;
 }
 /**
- * 测试用，用于和java代码核对两者行为是否一致
+ * 用于和java代码核对两者行为是否一致
  */
-function testEncrypt(){
+function 跨平台对测(){
     var data = string2data("昆仑#@13abc赑箜琳亵渎琅篌屃");
     var key = string2data("注意注意");
     console.info("data=", data);
@@ -297,12 +328,9 @@ function testEncrypt(){
     console.info("decrypted string=",data2string(decrypted));
 }
 
-function testFileRead(){
-    var data = string2data("昆仑#@13abc赑箜琳亵渎琅篌屃");
-    var key = string2data("注意注意");
-    var encrypted=encrypt(data,key);
-    console.info("encrypted=",encrypted);
-    console.info("encrypted string=",JSON.stringify(encrypted));
-    console.info("wrong decrypted=",decrypt(encrypted,string2data("1234")));
+function 测试密码生成(){
+    var pass=generatePassword("123","2/tmp/ii","123###!!!@@@%%%***$$$aaaBBB");
+    console.assert(pass==="229.#?FQG:Lk<{1_YEs0mhlmHSK","生成密码行为发生变动,pass="+pass);
 }
-export {string2data,data2string,zeahash,encrypt,decrypt}
+测试密码生成();
+export {string2data,data2string,zeahash,encrypt,decrypt,generatePassword}
