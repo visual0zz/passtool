@@ -258,7 +258,7 @@ class ZeaDataTest {
         }
     }
     /**
-     * 和js参照测试
+     * 用于和js代码核对两者行为是否一致
      */
 //    @Test
     public void 跨平台对测() {

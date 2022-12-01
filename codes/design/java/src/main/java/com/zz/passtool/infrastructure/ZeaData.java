@@ -509,7 +509,7 @@ public final class ZeaData {
     public String generatePassword(String format) {
         ZeaData source = this;
         if (source.data.size() < format.length()) {
-            source = source.align(format.length());
+            throw new RuntimeException("没有足够的数据匹配format的长度");
         }
         format = format.replaceAll("[0-9]", "0");
         format = format.replaceAll("[a-z]", "a");
@@ -526,8 +526,8 @@ public final class ZeaData {
         charsMap.put('*',SPECIAL_CHARS+LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS);
         charsMap.put('$',LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS);
         for (int i = 0; i < format.length(); i++) {
-            String chars=charsMap.get(format.charAt(i));
-            if(chars!=null) {
+            var chars=charsMap.get(format.charAt(i));
+            if(!(chars == null)) {
                 builder.append(chars.charAt(source.data.get(i) % chars.length()));
             }
         }

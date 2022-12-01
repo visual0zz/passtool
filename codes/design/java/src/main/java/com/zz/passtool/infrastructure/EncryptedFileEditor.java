@@ -1,5 +1,6 @@
 package com.zz.passtool.infrastructure;
 
+import com.zz.passtool.infrastructure.filesystem.Bash;
 import com.zz.passtool.utils.ParamCheckUtil;
 
 import java.io.*;
@@ -62,6 +63,12 @@ public class EncryptedFileEditor {
     }
     public void write(File file,List<String> content){
         ParamCheckUtil.assertTrue(passwords.size()>0,"必须有至少一个密码才能进行加解密");
+        try {
+            Bash.touch(file);
+        } catch (IOException e) {
+            System.out.println("新建文件失败："+file.getAbsolutePath());
+            return;
+        }
         content=new ArrayList<>(content);
         content.add("0".repeat(passwords.size()*3));//用于解密时判定密码是否正确的魔数
         ZeaData data= ZeaData.from(content==null?"":String.join("\n",content));

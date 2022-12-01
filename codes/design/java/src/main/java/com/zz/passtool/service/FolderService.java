@@ -75,7 +75,7 @@ public final class FolderService {
         dataFiles.sort(DATA_ITEM_ORDER);
         StringBuilder index=new StringBuilder();
         for(File f:dataFiles){
-            index.append(Bash.relatedPath(f,DATA_FOLDER).replaceAll("[/\\\\]","/")).append('\n');
+            index.append(Bash.relatedPath(f,DATA_FOLDER).replaceAll("[/\\\\]","/").replaceAll("\\.json(?=\n|$)","")).append('\n');
         }
         try (FileOutputStream indexFile=new FileOutputStream(new File(DATA_FOLDER,"index"))){
             PrintStream p=new PrintStream(indexFile);
