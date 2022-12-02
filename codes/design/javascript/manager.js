@@ -34,3 +34,4 @@ function readItem(path,keys,seed,access){
 readItem("t","1","jsp",function(d){
     console.log("data=",d);
 })
+export {readIndex,readItem}

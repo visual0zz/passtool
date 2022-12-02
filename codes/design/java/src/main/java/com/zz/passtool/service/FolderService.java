@@ -77,6 +77,9 @@ public final class FolderService {
         for(File f:dataFiles){
             index.append(Bash.relatedPath(f,DATA_FOLDER).replaceAll("[/\\\\]","/").replaceAll("\\.json(?=\n|$)","")).append('\n');
         }
+        if(index.charAt(index.length()-1)=='\n'){
+            index.deleteCharAt(index.length()-1);
+        }
         try (FileOutputStream indexFile=new FileOutputStream(new File(DATA_FOLDER,"index"))){
             PrintStream p=new PrintStream(indexFile);
             p.print(index);

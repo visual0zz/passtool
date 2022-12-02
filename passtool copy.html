@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>个人数据管理小工具</title>
+</head>
+
+<body
+    style="background-color:#00aaff;background-image: linear-gradient(to bottom right, #33ddff, #1155ee);background-repeat:no-repeat;background-position: left center;">
+    <div>
+        <div>
+            <h1>个人数据管理小工具</h1>
+            <br />
+            <button id="keyword_statebutton" onclick="changeKeywordInputState()"
+                style="border-style: none;background: none;padding: unset;">※※※</button>:<input id="keyword"
+                style="width:25em;">
+            <br />
+            <button id="seed_statebutton" onclick="changeSeedInputState()"
+                style="border-style: none;background: none;padding: unset;">※※※</button>:<input id="seed"
+                style="width:25em;">
+            <br /><br />
+        </div>
+
+        <div id="menu"
+            style="background-color:#00ddcc;float:left;padding: 1em;background-image: linear-gradient(to bottom, #00ddcc, #11aabb);">
+            <button id="item_bupt_info"
+                name="VRHP6vQtx+4zwOTjWUJTcMU1uOh7RUAuZq5CHAEhQm8w7APXfyCw3T09YEbqj79jAZcZE969w3rWVXWnb0Jf1Qe0hReFrR1Sog7YqznM0Ch6QCzdyet9bbWUL7ly0TSAM787SC7xHYIYMx2n3VNUum7J2GsuHqP30AGKTfwuLuwhnDdINjaERIKoxjIfih7J+2ZMv+hLtU5km/Gvr3EYszpxBYio4EiBuE9bA7ZsdDwO4JcGNbAlsbDyh7pzHRO3NXe0prImdwlW3MdwkYW2PA=="
+                onclick="showItemInfo(this.id,this.name)">北邮个人信息</button><br /> ------------<br />
+            <button id="item_alibaba" name="" onclick="showItemInfo(this.id,this.name)">个人域</button><br />
+            <button id="item_dingtalk" name="" onclick="showItemInfo(this.id,this.name)">钉钉</button><br />
+            <button id="item_zhifubao" name="" onclick="showItemInfo(this.id,this.name)">支付宝</button><br />
+            ------------<br />
+            <button id="item_apple" name="" onclick="showItemInfo(this.id,this.name)">苹果账号</button><br />
+            <button id="item_microsoft" name="" onclick="showItemInfo(this.id,this.name)">微软账号</button><br />
+            <button id="item_internal_jetbrain" name="1mK8EgDaUcaLiIriCDPigw7dd5B17bHLflB3VhcpTpE="
+                onclick="showItemInfo(this.id,this.name)">jetBrain账号公司内部版</button><br />
+            ------------<br />
+            <button id="item_wechat" name="" onclick="showItemInfo(this.id,this.name)">微信</button><br />
+            <button id="item_qq" onclick="showItemInfo(this.id)">QQ</button><br />
+        </div>
+        <div id="content" style="background-color:#dddddd55;">&nbsp;</div>
+        <div id="foot" style="background-color:#66aa99;float:inline-end;padding:1em;"><button>↑</button></div>
+
+    </div>
+    <script type="module">
+        import * as manager from "./codes/design/javascript/manager.js";
+        window.onload = function () {
+            manager.readIndex(items => {
+                var menu = "";
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    menu += '<button id="' + item + '" onclick="showItemInfo(this.id)">' + item + '</button><br/>';
+                }
+                document.getElementById("menu").innerHTML = menu;
+            });
+        };
+    </script>
+</body>
+
+</html>

@@ -1,11 +1,12 @@
-/.vs
+.vs
 *.iml
 *.idea
 .idea
 .gradle
 .DS_Store
 codes/design/java/build/*
-codes/design/java/tmp/*
+!codes/design/java/build/libs/
+codes/design/java/tmp/
 *.deleted
 *.class
 /datastorage
