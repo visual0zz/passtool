@@ -17,7 +17,7 @@ function GET(url,processFunction,errorFunction){
  * @param {function} access 
  */
 function accessIndexList(access){
-    GET("datastorage/index",function(data){
+    GET("../../../datastorage/index",function(data){
         access(data.split("\n"));
     },function(){
         console.error("读取index文件失败。");
@@ -30,7 +30,7 @@ function accessIndexList(access){
  * @param {function} access 接受结果数据的函数
  */
 function accessEncryptedDataFile(file,keys,access){
-    GET("datastorage/"+file+".json",function(response){
+    GET("../../../datastorage/"+file+".json",function(response){
         var data=JSON.parse(response);
         var keyset=keys.split(" ");
         for(var i=0;i<keyset.length;i++){
@@ -43,7 +43,7 @@ function accessEncryptedDataFile(file,keys,access){
                 return;
             }
         }
-        access(zeadata.data2string(zeadata.decrypt(data,zeadata.string2data(keyset[0]))))
+        access([zeadata.data2string(zeadata.decrypt(data,zeadata.string2data(keyset[0])))])
     },function(){
         console.error("读取文件失败:"+file);
     }) 

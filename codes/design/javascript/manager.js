@@ -10,7 +10,8 @@ function readItem(path,keys,seed,access){
     tool.accessEncryptedDataFile(path,keys,function(data){
         //在解密出来的明文中将密码格式符号替换为生成的密码
         if(seed==null){
-            access(data);
+            console.error("没有seed");
+            return;
         }
         var result=[];
         for(var i=0;i<data.length;i++){
@@ -30,8 +31,4 @@ function readItem(path,keys,seed,access){
         access(result);
     });
 }
-
-readItem("t","1","jsp",function(d){
-    console.log("data=",d);
-})
 export {readIndex,readItem}
