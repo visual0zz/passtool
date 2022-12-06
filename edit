@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+dirname_tmp=$(dirname "$0" )
+script_path=$(cd "$dirname_tmp" && pwd )
+cd "$script_path"
+
+java -jar codes/design/java/build/libs/passtool.jar
