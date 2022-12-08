@@ -1,1 +1,0 @@
-<button id="item_qq" name="" onclick="showItemInfo(this.id,this.name)">QQ账号</button><br/>
