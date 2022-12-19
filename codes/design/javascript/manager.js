@@ -21,7 +21,7 @@ function readItem(path,keys,seed,access){
             for(var j=0;j<words.length;j++){
                 var word=words[j];
                 if(word.match(PASSWORD_FORMATTER_FORMAT)){
-                    var password=zeadata.generatePassword(seed,path,word.slice(1,-1));
+                    var password=zeadata.generatePassword(seed,path+".json",word.slice(1,-1));
                     newRow=newRow.replace(word,password);
                     console.log("word match:",word,"password=",password);
                 }

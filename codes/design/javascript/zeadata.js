@@ -288,13 +288,13 @@ const LOWER_CHARS = "abcdefghijklmnopqrstuvwxyz";//小写字母
 const UPPER_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";//大写字母列表
 function generatePassword(systemSeed,filePath,formatter){
     var data=string2data(systemSeed+"#"+filePath+"#"+formatter);
-    console.info("passwd seed=",systemSeed+"#"+filePath+"#"+formatter);
+    // console.info("passwd seed=",systemSeed+"#"+filePath+"#"+formatter);
     data=encrypt(data,zeahash(align(data,20),20));
     data=zeahash(data,formatter.length);
     formatter=formatter.replace(/[0-9]/g, "0");
     formatter=formatter.replace(/[a-z]/g, "a");
     formatter=formatter.replace(/[A-Z]/g, "A");
-    console.info(formatter);
+    // console.info(formatter);
     var charsetmap={
         '0':NUMBER_CHARS,
         'a':LOWER_CHARS,
