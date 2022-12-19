@@ -16,7 +16,7 @@ public class Drop extends Command {
     }
     @Override
     public String shortHelp() {
-        return "drop <file> <rowNum> : 删除文件的某一行，行号从0开始计数";
+        return "drop <file> <rowNum> : 删除文件的某一行，行号从0开始计数（内存写）";
     }
 
 }

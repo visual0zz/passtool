@@ -12,6 +12,6 @@ public class Flush extends Command {
 
     @Override
     public String shortHelp() {
-        return "flush : 将所有的修改刷入文件";
+        return "flush : 将所有的修改刷入文件（文件写）";
     }
 }

@@ -13,6 +13,13 @@ public class Passwd extends Command {
     }
     @Override
     public String shortHelp() {
-        return "passwd <password> : 设定密码，密码用于加解密文件";
+        return "passwd <password> : 设定密码，密码用于加解密文件（内存写）";
+    }
+
+    @Override
+    public String longHelp() {
+        return shortHelp()
+                + "\npasswd指令会建立一个待选密码列表，从文件读取数据时会使用所有密码进行解密尝试，写文件时，会使用最新的密码进行加密"
+                + "\n多次执行passwd会将多个密码放入这个待选列表中（只写不读）";
     }
 }

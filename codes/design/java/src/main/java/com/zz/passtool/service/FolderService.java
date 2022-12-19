@@ -103,6 +103,8 @@ public final class FolderService {
         List<File> dataFiles= Bash.find(currentFolder,".*\\.json",false);
         for(File f:dataFiles){
             FileCacheService.fakeEdit(f);
+            System.out.println(f.getAbsolutePath());
         }
+        System.out.println("密码修改是内存操作，在flush或者finish之前不会实际生效");
     }
 }

@@ -17,6 +17,6 @@ public class New extends Command {
     }
     @Override
     public String shortHelp() {
-        return "new <file> : 新建文件";
+        return "new <file> : 新建文件（文件写）";
     }
 }

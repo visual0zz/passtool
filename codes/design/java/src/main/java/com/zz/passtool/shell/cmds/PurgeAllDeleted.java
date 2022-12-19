@@ -11,6 +11,6 @@ public class PurgeAllDeleted extends Command {
     }
     @Override
     public String shortHelp() {
-        return "purgeAllDeleted : 清理所有已删除的条目";
+        return "purgeAllDeleted : 清理所有已删除的条目（文件写）";
     }
 }

@@ -19,7 +19,7 @@ public class Delete extends Command {
     }
     @Override
     public String shortHelp() {
-        return "delete <file> : 删除文件(软删除)";
+        return "delete <file> : 删除文件(软删除)（文件写）";
     }
 
 }

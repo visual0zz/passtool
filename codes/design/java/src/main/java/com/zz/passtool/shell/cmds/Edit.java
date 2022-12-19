@@ -16,7 +16,7 @@ public class Edit extends Command {
     }
     @Override
     public String shortHelp() {
-        return "edit <file> <rowNum> <content> : 修改文件的某一行的内容,行号从0开始计数";
+        return "edit <file> <rowNum> <content> : 修改文件的某一行的内容,行号从0开始计数（内存写）";
     }
 
 }

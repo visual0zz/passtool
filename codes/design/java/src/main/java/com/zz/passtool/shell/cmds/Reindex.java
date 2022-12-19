@@ -14,6 +14,6 @@ public class Reindex extends Command {
 
     @Override
     public String shortHelp() {
-        return "reindex : 重建index文件";
+        return "reindex : 重建index文件（文件写）";
     }
 }

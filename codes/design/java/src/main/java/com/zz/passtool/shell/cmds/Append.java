@@ -17,7 +17,7 @@ public class Append extends Command {
 
     @Override
     public String shortHelp() {
-        return "append <file> <content> : 向文件加行";
+        return "append <file> <content> : 向文件加行（内存写）";
     }
 
 }

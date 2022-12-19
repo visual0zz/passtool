@@ -16,7 +16,7 @@ public class Finish extends Command {
     }
     @Override
     public String shortHelp() {
-        return "finish : 保存所有变更并退出";
+        return "finish : 保存所有变更并退出（文件写）";
     }
 
 }

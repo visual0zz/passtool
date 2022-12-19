@@ -12,6 +12,6 @@ public class UpdatePasswd extends Command {
     }
     @Override
     public String shortHelp() {
-        return "updatePasswd : 使用新密码重新加密所有当前目录下的所有文件";
+        return "updatePasswd : 使用新密码重新加密所有当前目录下的所有文件（内存写）";
     }
 }
