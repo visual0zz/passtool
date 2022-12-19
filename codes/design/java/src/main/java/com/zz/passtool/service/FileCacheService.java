@@ -71,6 +71,17 @@ public final class FileCacheService {
             System.out.println("删除失败");
         }
     }
+
+    /**
+     * 对文件进行一个假编辑，不修改任何实际内容,但会被视为修改。用来触发写文件时的重新加密过程
+     * @param file 文件
+     */
+    public static void fakeEdit(File file){
+        String key=getFullPath(file);
+        if(!writeCache.containsKey(key)){
+            writeCache.put(key,new ArrayList<>(read(file)));
+        }
+    }
     public static List<List<String>> diff(File file){
         String key=getFullPath(file);
         if(readCache.containsKey(key) && writeCache.containsKey(key)){

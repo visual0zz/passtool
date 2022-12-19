@@ -99,4 +99,10 @@ public final class FolderService {
             System.out.println(result);
         }
     }
+    public static void updatePassword(){
+        List<File> dataFiles= Bash.find(currentFolder,".*\\.json",false);
+        for(File f:dataFiles){
+            FileCacheService.fakeEdit(f);
+        }
+    }
 }
