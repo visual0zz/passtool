@@ -56,11 +56,9 @@ public class Cat extends Command {
         return result;
     }
     private static String buildPassword(String systemSeed,String filePath,String formatter){
-//        System.out.println(systemSeed+"#"+filePath+"#"+formatter);
         ZeaData data=ZeaData.from(systemSeed+"#"+filePath+"#"+formatter);
         data=data.encrypt(data.align(20).zeaHash(20));
         data=data.zeaHash(formatter.length());
-        System.out.println("pass="+data);
         return data.generatePassword(formatter);
     }
 }
