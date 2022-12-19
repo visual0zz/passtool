@@ -42,6 +42,7 @@
             if (inputbox.type == "password") {
                 inputbox.type = "";
                 switch_button.innerHTML = "〇密码";
+                localStorage.setItem("K",inputbox.value);
             } else {
                 inputbox.type = "password";
                 switch_button.innerHTML = "※※※";
@@ -53,6 +54,7 @@
             if (inputbox.type == "password") {
                 inputbox.type = "";
                 switch_button.innerHTML = "〇种子";
+                localStorage.setItem("S",inputbox.value);
             } else {
                 inputbox.type = "password";
                 switch_button.innerHTML = "※※※";
@@ -79,6 +81,8 @@
                 document.getElementById("menu").innerHTML = menu;
             });
             localStorage.setItem("jumpTarget","codes/design/javascript/passtool.html");
+            document.getElementById('seed').value=localStorage.getItem("S");
+            document.getElementById('keyword').value=localStorage.getItem("K");
         };
     </script>
 </body>
