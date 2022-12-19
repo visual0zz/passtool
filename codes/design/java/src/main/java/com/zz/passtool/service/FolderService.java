@@ -90,4 +90,13 @@ public final class FolderService {
             System.out.println("打开索引文件失败："+new File(DATA_FOLDER,"index").getAbsolutePath());
         }
     }
+
+    public static void purgeAllDeleted(){
+        List<File> dataFiles= Bash.find(DATA_FOLDER,".*\\.json.deleted",false);
+        for (File dataFile : dataFiles) {
+            String result="清理文件<"+dataFile.getAbsolutePath()+">";
+            result=result+(dataFile.delete()?"成功":"失败");
+            System.out.println(result);
+        }
+    }
 }

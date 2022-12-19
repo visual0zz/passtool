@@ -59,7 +59,10 @@ public final class FileCacheService {
     }
     public static void deleteFile(File file){
         String key=getFullPath(file);
-        SOURCE.write(new File(key),writeCache.get(key));
+        if(writeCache.containsKey(key))
+        {
+            SOURCE.write(new File(key),writeCache.get(key));
+        }
         readCache.remove(key);
         writeCache.remove(key);
         if(file.renameTo(new File(key+".deleted"))){
