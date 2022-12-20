@@ -9,4 +9,3 @@ codes/design/java/build/*
 codes/design/java/tmp/
 *.deleted
 *.class
-/datastorage
