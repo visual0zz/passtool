@@ -526,7 +526,7 @@ public final class ZeaData {
         charsMap.put('*',SPECIAL_CHARS+LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS);
         charsMap.put('$',LOWER_CHARS+UPPER_CHARS+NUMBER_CHARS);
         for (int i = 0; i < format.length(); i++) {
-            var chars=charsMap.get(format.charAt(i));
+            String chars=charsMap.get(format.charAt(i));
             if(!(chars == null)) {
                 builder.append(chars.charAt(source.data.get(i) % chars.length()));
             }
