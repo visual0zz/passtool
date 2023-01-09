@@ -4,8 +4,8 @@ plugins {
 repositories {
     mavenCentral()
 }
-project.sourceCompatibility = '1.8'
-project.targetCompatibility = '1.8'
+project.sourceCompatibility = '8'
+project.targetCompatibility = '8'
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -16,9 +16,8 @@ test {
 }
 
 jar{
-    baseName = 'passtool'
-    classifier = null
-    version = null
+    archiveBaseName = 'passtool'
+    archiveVersion = null
     manifest {
         attributes 'Main-Class': 'com.zz.passtool.Main'
     }

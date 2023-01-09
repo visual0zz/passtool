@@ -16,7 +16,9 @@ public class EncryptedFileEditor {
     private List<String> passwords;
     public EncryptedFileEditor(String...passwords){
         this.passwords= new LinkedList<>();
-        this.passwords.addAll(List.of(passwords));
+        for(String pass:passwords){
+            this.passwords.add(pass);
+        }
     }
     public void addPassword(String password){
         if(password!=null){
@@ -30,8 +32,9 @@ public class EncryptedFileEditor {
         ParamCheckUtil.assertTrue(passwords.size()>0,"必须有至少一个密码才能进行加解密");
         List<String>result= new ArrayList<>();
         try (FileInputStream fileInputStream=new FileInputStream(file)){
-            Scanner in=new Scanner(fileInputStream, StandardCharsets.UTF_8);
-            ZeaData encrypted=ZeaData.fromJson(in.nextLine());
+            byte[] dataRaw=new byte[fileInputStream.available()];
+            fileInputStream.read(dataRaw);
+            ZeaData encrypted=ZeaData.fromJson(new String(dataRaw,StandardCharsets.UTF_8));
             Optional<String[]> data=passwords.stream()
                     .map(ZeaData::from)
                     .map(encrypted::decrypt)
@@ -70,14 +73,12 @@ public class EncryptedFileEditor {
             return;
         }
         content=new ArrayList<>(content);
-        content.add("0".repeat(passwords.size()*3));//用于解密时判定密码是否正确的魔数
+        content.add("0000000");//用于解密时判定密码是否正确的魔数
         ZeaData data= ZeaData.from(content==null?"":String.join("\n",content));
         ZeaData salt=ZeaData.from(passwords.size()+ Instant.now().toString()+passwords.hashCode()).zeaHash(20);
         ZeaData encrypted=data.encrypt(ZeaData.from(passwords.get(passwords.size()-1)),salt);
         try (FileOutputStream fileOutputStream=new FileOutputStream(file)){
-            PrintStream p=new PrintStream(fileOutputStream,false, StandardCharsets.UTF_8);
-            p.print(encrypted.toJson());
-            p.close();
+            fileOutputStream.write(encrypted.toJson().getBytes(StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             System.out.println("找不到文件："+file.getAbsolutePath());
         } catch (IOException e) {
