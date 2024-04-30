@@ -28,7 +28,7 @@ else #如果是其他linux系统
 fi
 #提取本机ip 用于过滤掉目标ip是本机的仓库，不通过自动推送到本机仓库
 #遍历仓库列表文件
-for i in `cat $script_path/codes/config/repolist.txt`
+for i in `cat $script_path/repolist.txt`
 do
 	first_char=$(echo $i|grep -o "#" )
 	if [ "$first_char" != "#" ] ;then
