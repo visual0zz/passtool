@@ -8,7 +8,8 @@ cd "$script_path"
 # 常量配置
 LOCAL_BRANCH="master"
 REMOTE_BRANCH="master"
-REPOLIST="$script_path/repolist.txt"
+REPO_LIST_FILE="repolist.txt"
+DEFAULT_COMMIT_MESSAGE="自动提交"
 
 #添加 git logs 指令，用不那么反人类的方式显示提交列表
 git config --local alias.logs "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
@@ -19,7 +20,7 @@ git config --local user.email gnosis@pleroma.com
 
 #如果没有提交消息，默认为"自动提交"，也可传一个自定义提交信息
 if [ $# -eq 0 ]; then
-  message="自动提交"
+  message="$DEFAULT_COMMIT_MESSAGE"
 elif [ $# -eq 1 ]; then
   message="$1"
 else
@@ -31,18 +32,15 @@ fi
 git add -A
 git commit -m "$message"
 
-#提取本机IP（用于过滤掉目标IP是本机的仓库）
-get_local_ips() {
-  if [[ "$(uname -a)" =~ "Darwin" ]]; then
-    ifconfig | grep -Eo 'inet [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | awk '{print $2}'
-  else
-    ip address show scope global | grep -Eo 'inet [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | awk '{print $2}'
-  fi
-}
-local_ips=$(get_local_ips)
+#提取本机IP（用于过滤掉目标IP是本机的仓库）=
+if [[ "$(uname -a)" =~ "Darwin" ]];then #如果是苹果mac系统
+	local_ips=$(ifconfig|grep -Eo 'inet *((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])'|grep -Eo '((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])')
+else #如果是其他linux系统
+	local_ips=$(ip address show scope global |grep -Eo 'inet *((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])'|grep -Eo '((1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])\.){3}(1?[0-9]{2}|2[0-4][0-9]|25[0-6]|[0-9])')
+fi
 
 #遍历仓库列表文件
-for i in `cat "$REPOLIST"`
+for i in `cat "$script_path/$REPO_LIST_FILE"`
 do
 	first_char=$(echo $i|grep -o "#" )
 	if [ "$first_char" != "#" ] ;then
