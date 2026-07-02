@@ -11,10 +11,3 @@ git@gitcode.net:visual_zz/passtool.git
 git@github.com:visual0zz/passtool.git
 #github
 
-git@codeup.aliyun.com:6a465acaebc01644c579e739/passtool.git
-#阿里云效
-
-
-
-
-
